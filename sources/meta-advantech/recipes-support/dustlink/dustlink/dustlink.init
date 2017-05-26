@@ -1,0 +1,24 @@
+#! /bin/sh
+
+case "$1" in
+  start)
+	echo -n "Starting dustlink: "
+	start-stop-daemon -S -x /usr/bin/dustLinkFullWeb.py -p /var/run/dustlink.pid -b -m
+	echo "done"
+	;;
+  stop)
+	echo -n "Stopping dustlink: "
+	start-stop-daemon -K -p /var/run/dustlink.pid &> /dev/null
+	echo "done"
+	;;
+  restart)
+  	$0 stop
+	$0 start
+	;;
+  *)
+	echo "Usage: dustlink { start | stop | restart }" >&2
+	exit 1
+	;;
+esac
+
+exit 0

@@ -1,0 +1,24 @@
+--- ./usb_mount	2016-03-30 16:49:32.971755566 +0800
++++ ./usb_mount	2016-03-30 16:50:30.539755492 +0800
+@@ -0,0 +1,21 @@
++#!/bin/bash
++{
++V_YOCTO=`cat /etc/issue |grep Distro`
++
++if [ -n "$V_YOCTO" ] ;then # Yocto
++	USB_DEV=/media/sda1
++else
++	USB_DEV=/mnt/disk
++	if [ ! -d $USB_DEV ]; then
++	    mkdir $USB_DEV
++	fi
++	/bin/mount /dev/udisk$1 $USB_DEV
++fi
++
++sleep 3
++
++# For Burn In Test
++if [ -e $USB_DEV/burnin.sh ]; then
++    $USB_DEV/burnin.sh
++fi
++} &

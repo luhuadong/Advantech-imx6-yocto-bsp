@@ -1,0 +1,20 @@
+Only allow module config for wise
+
+--- webmin-1.620/web-lib-funcs.pl	2015-06-02 17:22:24.974127320 +0800
++++ webmin-1.620.new/web-lib-funcs.pl	2015-06-04 16:57:39.147234348 +0800
+@@ -900,6 +900,7 @@
+ 		print &hlink($text{'header_help'}, $_[2]),"<br>\n";
+ 		}
+ 	if ($_[3]) {
++		if(&get_module_name() eq "wise") {
+ 		my %access = &get_module_acl();
+ 		if (!$access{'noconfig'} && !$config{'noprefs'}) {
+ 			my $cprog = $user_module_config_directory ?
+@@ -908,6 +909,7 @@
+ 			      &get_module_name()."\">",
+ 			      $text{'header_config'},"</a><br>\n";
+ 			}
++			}
+ 		}
+ 	print "</td>\n";
+ 	if ($_[1]) {

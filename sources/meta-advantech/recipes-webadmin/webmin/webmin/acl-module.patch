@@ -1,0 +1,367 @@
+diff -Nur webmin-1.620/acl/config webmin-1.620.new/acl/config
+--- webmin-1.620/acl/config	2013-02-03 14:47:00.000000000 +0800
++++ webmin-1.620.new/acl/config	2015-06-04 10:47:30.214572280 +0800
+@@ -1,4 +1,4 @@
+ ssleay=/usr/local/ssl/bin/openssl
+-select=0
++select=1
+ order=0
+ display=1
+diff -Nur webmin-1.620/acl/config-*-linux webmin-1.620.new/acl/config-*-linux
+--- webmin-1.620/acl/config-*-linux	2015-06-04 14:00:51.330918120 +0800
++++ webmin-1.620.new/acl/config-*-linux	2015-06-04 13:59:47.774916225 +0800
+@@ -1,4 +1,4 @@
+ ssleay=/usr/bin/openssl
+-select=0
++select=1
+ order=0
+ display=1
+diff -Nur webmin-1.620/acl/edit_user.cgi webmin-1.620.new/acl/edit_user.cgi
+--- webmin-1.620/acl/edit_user.cgi	2013-02-03 14:47:00.000000000 +0800
++++ webmin-1.620.new/acl/edit_user.cgi	2015-06-04 11:51:19.254686427 +0800
+@@ -98,22 +98,22 @@
+ if ($in{'user'}) {
+ 	push(@opts, [ 1, $text{'edit_dont'} ]);
+ 	}
+-push(@opts, [ 3, $text{'edit_unix'} ]);
+-if ($user{'sync'}) {
+-	push(@opts, [ 2, $text{'edit_same'} ]);
+-	}
+-if ($miniserv{'extauth'}) {
+-	push(@opts, [ 5, $text{'edit_extauth'} ]);
+-	}
+-push(@opts, [ 4, $text{'edit_lock'} ]);
+-if ($passmode == 1) {
+-	$lockbox = &ui_checkbox("lock", 1, $text{'edit_templock'},
+-			               $user{'pass'} =~ /^\!/ ? 1 : 0);
+-	}
+-if ($passmode != 3 && $passmode != 4) {
+-	$tempbox = &ui_checkbox("temp", 1, $text{'edit_temppass'},
+-				$user{'temppass'});
+-	}
++#push(@opts, [ 3, $text{'edit_unix'} ]);
++#if ($user{'sync'}) {
++#	push(@opts, [ 2, $text{'edit_same'} ]);
++#	}
++#if ($miniserv{'extauth'}) {
++#	push(@opts, [ 5, $text{'edit_extauth'} ]);
++#	}
++#push(@opts, [ 4, $text{'edit_lock'} ]);
++#if ($passmode == 1) {
++#	$lockbox = &ui_checkbox("lock", 1, $text{'edit_templock'},
++#			               $user{'pass'} =~ /^\!/ ? 1 : 0);
++#	}
++#if ($passmode != 3 && $passmode != 4) {
++#	$tempbox = &ui_checkbox("temp", 1, $text{'edit_temppass'},
++#				$user{'temppass'});
++#	}
+ if ($user{'lastchange'} && $miniserv{'pass_maxdays'}) {
+ 	$daysold = int((time() - $user{'lastchange'})/(24*60*60));
+ 	if ($miniserv{'pass_lockdays'} &&
+@@ -140,17 +140,18 @@
+ 	($lockbox || $tempbox ? "<br>" : "").$lockbox.$tempbox.$expmsg);
+ 
+ # Real name
+-print &ui_table_row($text{'edit_real'},
+-	&ui_textbox("real", $user{'real'}, 60));
++#print &ui_table_row($text{'edit_real'},
++#	&ui_textbox("real", $user{'real'}, 60));
+ 
+ # Storage type
+-if ($in{'user'}) {
+-	print &ui_table_row($text{'edit_proto'},
+-		$text{'edit_proto_'.$user{'proto'}});
+-	}
++#if ($in{'user'}) {
++#	print &ui_table_row($text{'edit_proto'},
++#		$text{'edit_proto_'.$user{'proto'}});
++#	}
+ 
+ print &ui_hidden_table_end("rights");
+ 
++print "<div style=\"display:none\">";
+ # Start of UI options section
+ $showui = $access{'chcert'} || $access{'lang'} ||
+ 	  $access{'cats'} || $access{'theme'};
+@@ -371,11 +372,13 @@
+ 	&foreign_call("", "acl_security_form", \%uaccess);
+ 	print &ui_hidden_table_end("global");
+ 	}
++print "</div>";
+ 
+ # Generate form end buttons
+ @buts = ( );
+ push(@buts, [ undef, $in{'user'} ? $text{'save'} : $text{'create'} ]);
+-if ($in{'user'}) {
++#if ($in{'user'}) {
++if (0) {
+ 	if ($access{'create'} && !$group) {
+ 		push(@buts, [ "but_clone", $text{'edit_clone'} ]);
+ 		}
+diff -Nur webmin-1.620/acl/index.cgi webmin-1.620.new/acl/index.cgi
+--- webmin-1.620/acl/index.cgi	2015-06-04 11:49:20.346682883 +0800
++++ webmin-1.620.new/acl/index.cgi	2015-06-04 11:50:46.074685438 +0800
+@@ -50,11 +50,11 @@
+ elsif ($config{'display'}) {
+ 	# Show as table of names
+ 	print &ui_subheading($text{'index_users'});
+-	print &ui_form_start("delete_users.cgi", "post");
++#	print &ui_form_start("delete_users.cgi", "post");
+ 	&show_name_table(\@canulist, "edit_user.cgi",
+ 			 $access{'create'} ? $text{'index_create'} : undef,
+ 			 $text{'index_users'}, "user");
+-	print &ui_form_end([ [ "delete", $text{'index_delete'} ] ]);
++#	print &ui_form_end([ [ "delete", $text{'index_delete'} ] ]);
+ 	$shown_users = 1;
+ 	$form++;
+ 	}
+@@ -100,114 +100,114 @@
+ 	}
+ print "<p>\n";
+ 
+-if ($shown_users && $access{'groups'}) {
+-	print &ui_hr();
+-	}
+-
+-if ($access{'groups'}) {
+-	print &ui_subheading($text{'index_groups'});
+-	if (!@glist) {
+-		# No groups, so just show create link
+-		print "<b>$text{'index_nogroups'}</b><p>\n";
+-		print "<a href=edit_group.cgi>$text{'index_gcreate'}</a><p>\n";
+-		}
+-	elsif ($config{'display'}) {
+-		# Show just group names
+-		print &ui_form_start("delete_groups.cgi", "post");
+-		&show_name_table(\@glist, "edit_group.cgi",
+-				 $text{'index_gcreate'},
+-				 $text{'index_groups'}, "group");
+-		print &ui_form_end([ [ "delete", $text{'index_delete'} ] ]);
+-		$form++;
+-		}
+-	else {
+-		# Show table of groups
+-		@rowlinks = ( );
+-		if (!$config{'select'}) {
+-			print &ui_form_start("delete_groups.cgi", "post");
+-			push(@rowlinks, &select_all_link("d", $form),
+-				     &select_invert_link("d", $form));
+-			}
+-		push(@rowlinks,
+-		     "<a href=edit_group.cgi>$text{'index_gcreate'}</a>");
+-		print &ui_links_row(\@rowlinks);
+-
+-		print &ui_columns_start([ $text{'index_group'},
+-					  $text{'index_members'},
+-					  $text{'index_modules'} ], 100);
+-		foreach $g (@glist) {
+-			local @cols;
+-			push(@cols, &user_link($g,"edit_group.cgi","group"));
+-			push(@cols, join(" ", @{$g->{'members'}}));
+-			if ($ingroup{'@'.$g->{'name'}}) {
+-				# Is a member of some other group
+-				push(@cols, &show_modules("group", $g->{'name'},
+-				    $g->{'ownmods'},0,
+-				    &text('index_modgroups',
+-					  "<tt>$ingroup{$g->{'name'}}->{'name'}</tt>")));
+-				}
+-			else {
+-				# Is a top-level group
+-				push(@cols, &show_modules("group", $g->{'name'},
+-					      $g->{'modules'}, 1));
+-				}
+-			print &ui_columns_row(\@cols);
+-			}
+-		print &ui_columns_end();
+-		print &ui_links_row(\@rowlinks);
+-		if (!$config{'select'}) {
+-			print &ui_form_end([ [ "delete", $text{'index_delete'} ] ]);
+-			}
+-		$form++;
+-		}
+-	}
+-
+-&get_miniserv_config(\%miniserv);
+-if ($access{'sync'} && &foreign_check("useradmin")) {
+-	push(@icons, "images/convert.gif");
+-	push(@links, "convert_form.cgi");
+-	push(@titles, $text{'index_convert'});
+-	}
+-if ($access{'sync'} && $access{'create'} && $access{'delete'}) {
+-	push(@icons, "images/sync.gif");
+-	push(@links, "edit_sync.cgi");
+-	push(@titles, $text{'index_sync'});
+-	}
+-if ($access{'unix'} && $access{'create'} && $access{'delete'}) {
+-	push(@icons, "images/unix.gif");
+-	push(@links, "edit_unix.cgi");
+-	push(@titles, $text{'index_unix'});
+-	}
+-if ($access{'sessions'} && $miniserv{'session'}) {
+-	push(@icons, "images/sessions.gif");
+-	push(@links, "list_sessions.cgi");
+-	push(@titles, $text{'index_sessions'});
+-	}
+-if (uc($ENV{'HTTPS'}) eq "ON" && $miniserv{'ca'}) {
+-	push(@icons, "images/cert.gif");
+-	push(@links, "cert_form.cgi");
+-	push(@titles, $text{'index_cert'});
+-	}
+-if ($access{'rbacenable'}) {
+-	push(@icons, "images/rbac.gif");
+-	push(@links, "edit_rbac.cgi");
+-	push(@titles, $text{'index_rbac'});
+-	}
+-if ($access{'pass'}) {
+-	push(@icons, "images/pass.gif");
+-	push(@links, "edit_pass.cgi");
+-	push(@titles, $text{'pass_title'});
+-	}
+-if ($access{'sql'}) {
+-	push(@icons, "images/sql.gif");
+-	push(@links, "edit_sql.cgi");
+-	push(@titles, $text{'sql_title'});
+-	}
+-
+-if (@icons) {
+-	print &ui_hr();
+-	&icons_table(\@links, \@titles, \@icons);
+-	}
++#if ($shown_users && $access{'groups'}) {
++#	print &ui_hr();
++#	}
++
++#if ($access{'groups'}) {
++#	print &ui_subheading($text{'index_groups'});
++#	if (!@glist) {
++#		# No groups, so just show create link
++#		print "<b>$text{'index_nogroups'}</b><p>\n";
++#		print "<a href=edit_group.cgi>$text{'index_gcreate'}</a><p>\n";
++#		}
++#	elsif ($config{'display'}) {
++#		# Show just group names
++#		print &ui_form_start("delete_groups.cgi", "post");
++#		&show_name_table(\@glist, "edit_group.cgi",
++#				 $text{'index_gcreate'},
++#				 $text{'index_groups'}, "group");
++#		print &ui_form_end([ [ "delete", $text{'index_delete'} ] ]);
++#		$form++;
++#		}
++#	else {
++#		# Show table of groups
++#		@rowlinks = ( );
++#		if (!$config{'select'}) {
++#			print &ui_form_start("delete_groups.cgi", "post");
++#			push(@rowlinks, &select_all_link("d", $form),
++#				     &select_invert_link("d", $form));
++#			}
++#		push(@rowlinks,
++#		     "<a href=edit_group.cgi>$text{'index_gcreate'}</a>");
++#		print &ui_links_row(\@rowlinks);
++#
++#		print &ui_columns_start([ $text{'index_group'},
++#					  $text{'index_members'},
++#					  $text{'index_modules'} ], 100);
++#		foreach $g (@glist) {
++#			local @cols;
++#			push(@cols, &user_link($g,"edit_group.cgi","group"));
++#			push(@cols, join(" ", @{$g->{'members'}}));
++#			if ($ingroup{'@'.$g->{'name'}}) {
++#				# Is a member of some other group
++#				push(@cols, &show_modules("group", $g->{'name'},
++#				    $g->{'ownmods'},0,
++#				    &text('index_modgroups',
++#					  "<tt>$ingroup{$g->{'name'}}->{'name'}</tt>")));
++#				}
++#			else {
++#				# Is a top-level group
++#				push(@cols, &show_modules("group", $g->{'name'},
++#					      $g->{'modules'}, 1));
++#				}
++#			print &ui_columns_row(\@cols);
++#			}
++#		print &ui_columns_end();
++#		print &ui_links_row(\@rowlinks);
++#		if (!$config{'select'}) {
++#			print &ui_form_end([ [ "delete", $text{'index_delete'} ] ]);
++#			}
++#		$form++;
++#		}
++#	}
++#
++#&get_miniserv_config(\%miniserv);
++#if ($access{'sync'} && &foreign_check("useradmin")) {
++#	push(@icons, "images/convert.gif");
++#	push(@links, "convert_form.cgi");
++#	push(@titles, $text{'index_convert'});
++#	}
++#if ($access{'sync'} && $access{'create'} && $access{'delete'}) {
++#	push(@icons, "images/sync.gif");
++#	push(@links, "edit_sync.cgi");
++#	push(@titles, $text{'index_sync'});
++#	}
++#if ($access{'unix'} && $access{'create'} && $access{'delete'}) {
++#	push(@icons, "images/unix.gif");
++#	push(@links, "edit_unix.cgi");
++#	push(@titles, $text{'index_unix'});
++#	}
++#if ($access{'sessions'} && $miniserv{'session'}) {
++#	push(@icons, "images/sessions.gif");
++#	push(@links, "list_sessions.cgi");
++#	push(@titles, $text{'index_sessions'});
++#	}
++#if (uc($ENV{'HTTPS'}) eq "ON" && $miniserv{'ca'}) {
++#	push(@icons, "images/cert.gif");
++#	push(@links, "cert_form.cgi");
++#	push(@titles, $text{'index_cert'});
++#	}
++#if ($access{'rbacenable'}) {
++#	push(@icons, "images/rbac.gif");
++#	push(@links, "edit_rbac.cgi");
++#	push(@titles, $text{'index_rbac'});
++#	}
++#if ($access{'pass'}) {
++#	push(@icons, "images/pass.gif");
++#	push(@links, "edit_pass.cgi");
++#	push(@titles, $text{'pass_title'});
++#	}
++#if ($access{'sql'}) {
++#	push(@icons, "images/sql.gif");
++#	push(@links, "edit_sql.cgi");
++#	push(@titles, $text{'sql_title'});
++#	}
++#
++#if (@icons) {
++#	print &ui_hr();
++#	&icons_table(\@links, \@titles, \@icons);
++#	}
+ 
+ &ui_print_footer("/", $text{'index'});
+ 
+@@ -264,14 +264,14 @@
+ local @rowlinks = ( &select_all_link("d", $form),
+ 		    &select_invert_link("d", $form) );
+ push(@rowlinks, "<a href=$_[1]>$_[2]</a>") if ($_[2]);
+-print &ui_links_row(\@rowlinks);
++#print &ui_links_row(\@rowlinks);
+ local @links;
+ for(my $i=0; $i<@{$_[0]}; $i++) {
+ 	push(@links, &user_link($_[0]->[$i], $_[1], $_[4]));
+ 	}
+ print &ui_grid_table(\@links, 4, 100,
+ 	[ "width=25%", "width=25%", "width=25%", "width=25%" ], undef, $_[3]);
+-print &ui_links_row(\@rowlinks);
++#print &ui_links_row(\@rowlinks);
+ }
+ 
+ # user_link(user, cgi, param)
+diff -Nur webmin-1.620/acl/save_user.cgi webmin-1.620.new/acl/save_user.cgi
+--- webmin-1.620/acl/save_user.cgi	2013-02-03 14:47:00.000000000 +0800
++++ webmin-1.620.new/acl/save_user.cgi	2015-06-24 13:47:58.042408285 +0800
+@@ -371,5 +371,5 @@
+ 	&webmin_log("create", "user", $user{'name'}, \%in);
+ 	}
+ &reload_miniserv();
+-&redirect("");
++&redirect("../session_login.cgi?logout=1");
+ 

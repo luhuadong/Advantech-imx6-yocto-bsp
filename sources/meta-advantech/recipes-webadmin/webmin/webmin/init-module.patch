@@ -1,0 +1,131 @@
+diff -Nur webmin-1.620/init/index.cgi webmin-1.620.new/init/index.cgi
+--- webmin-1.620/init/index.cgi	2015-06-02 17:22:24.410127304 +0800
++++ webmin-1.620.new/init/index.cgi	2015-07-23 14:19:20.993158582 +0800
+@@ -102,7 +102,7 @@
+ 		}
+ 	if (!$config{'desc'}) {
+ 		# Display actions by name only
+-		print &ui_links_row(\@links);
++#		print &ui_links_row(\@links);
+ 		@grid = ( );
+ 		for($i=0; $i<@acts; $i++) {
+ 			if ($acts[$i]) {
+@@ -113,12 +113,12 @@
+ 		print &ui_grid_table(\@grid, 4, 100,
+ 		     [ "width=25%", "width=25%", "width=25%", "width=25%" ],
+ 		     undef, $text{'index_title'});
+-		print &ui_links_row(\@links);
++#		print &ui_links_row(\@links);
+ 		}
+ 	else {
+ 		# Display actions and descriptions
+ 		print &ui_form_start("mass_start_stop.cgi", "post");
+-		print &ui_links_row(\@links);
++#		print &ui_links_row(\@links);
+ 		print &ui_columns_start([
+ 			"",
+ 			$text{'index_action'},
+@@ -143,8 +143,9 @@
+ 				}
+ 			$order = $actsb[$i]->[0]->[1];
+ 			local @cols;
+-			push(@cols, "<a href=\"edit_action.cgi?".
+-			      	    "$actsl[$i]\">$acts[$i]</a>");
++			push(@cols, "<b>$acts[$i]</b>");
++#			push(@cols, "<a href=\"edit_action.cgi?".
++#			      	    "$actsl[$i]\">$acts[$i]</a>");
+ 			local %has;
+ 			$d = &html_escape(&init_description($actsf[$i],
+ 				 $config{'status_check'} == 2 ? \%has : undef));
+@@ -187,7 +188,7 @@
+ 				}
+ 			}
+ 		print &ui_columns_end();
+-		print &ui_links_row(\@links);
++#		print &ui_links_row(\@links);
+ 		@buts = ( [ "start", $text{'index_start'} ],
+ 			  [ "stop", $text{'index_stop'} ],
+ 			  [ "restart", $text{'index_restart'} ] );
+@@ -271,7 +272,7 @@
+ 	@links = ( &select_all_link("d"),
+ 		   &select_invert_link("d"),
+ 		   "<a href='edit_rc.cgi?new=1'>$text{'index_radd'}</a>" );
+-	print &ui_links_row(\@links);
++#	print &ui_links_row(\@links);
+ 	print &ui_columns_start([ "", $text{'index_rname'},
+ 				  $text{'index_rdesc'},
+ 				  $text{'index_rboot'} ]);
+@@ -287,7 +288,7 @@
+ 			]);
+ 		}
+ 	print &ui_columns_end();
+-	print &ui_links_row(\@links);
++#	print &ui_links_row(\@links);
+ 	print &ui_form_end([ [ "start", $text{'index_start'} ],
+ 			     [ "stop", $text{'index_stop'} ],
+ 			     undef,
+@@ -304,7 +305,7 @@
+ 	@links = ( &select_all_link("d"),
+ 		   &select_invert_link("d"),
+ 		   "<a href='edit_upstart.cgi?new=1'>$text{'index_uadd'}</a>" );
+-	print &ui_links_row(\@links);
++#	print &ui_links_row(\@links);
+ 	print &ui_columns_start([ "", $text{'index_uname'},
+ 				  $text{'index_udesc'},
+ 				  $text{'index_uboot'},
+@@ -331,7 +332,7 @@
+ 			]);
+ 		}
+ 	print &ui_columns_end();
+-	print &ui_links_row(\@links);
++#	print &ui_links_row(\@links);
+ 	print &ui_form_end([ [ "start", $text{'index_start'} ],
+ 			     [ "stop", $text{'index_stop'} ],
+ 			     [ "restart", $text{'index_restart'} ],
+@@ -350,7 +351,7 @@
+ 	@links = ( &select_all_link("d"),
+ 		   &select_invert_link("d"),
+ 		   "<a href='edit_systemd.cgi?new=1'>$text{'index_sadd'}</a>" );
+-	print &ui_links_row(\@links);
++#	print &ui_links_row(\@links);
+ 	print &ui_columns_start([ "", $text{'index_uname'},
+ 				  $text{'index_udesc'},
+ 				  $text{'index_uboot'},
+@@ -374,7 +375,7 @@
+ 			]);
+ 		}
+ 	print &ui_columns_end();
+-	print &ui_links_row(\@links);
++#	print &ui_links_row(\@links);
+ 	print &ui_form_end([ [ "start", $text{'index_start'} ],
+ 			     [ "stop", $text{'index_stop'} ],
+ 			     [ "restart", $text{'index_restart'} ],
+@@ -391,19 +392,19 @@
+ # reboot/shutdown buttons
+ print &ui_hr();
+ print &ui_buttons_start();
+-if ($init_mode eq 'init' && $access{'bootup'} == 1) {
+-	print &ui_buttons_row("change_rl.cgi", $text{'index_rlchange'},
+-			      $text{'index_rlchangedesc'}, undef,
+-			      &ui_select("level", $boot[0], \@runlevels));
+-	}
++#if ($init_mode eq 'init' && $access{'bootup'} == 1) {
++#	print &ui_buttons_row("change_rl.cgi", $text{'index_rlchange'},
++#			      $text{'index_rlchangedesc'}, undef,
++#			      &ui_select("level", $boot[0], \@runlevels));
++#	}
+ if ($access{'reboot'}) {
+ 	print &ui_buttons_row("reboot.cgi", $text{'index_reboot'},
+ 			      $text{'index_rebootmsg'});
+ 	}
+-if ($access{'shutdown'}) {
+-	print &ui_buttons_row("shutdown.cgi", $text{'index_shutdown'},
+-			      $text{'index_shutdownmsg'});
+-	}
++#if ($access{'shutdown'}) {
++#	print &ui_buttons_row("shutdown.cgi", $text{'index_shutdown'},
++#			      $text{'index_shutdownmsg'});
++#	}
+ print &ui_buttons_end();
+ 
+ &ui_print_footer("/", $text{'index'});

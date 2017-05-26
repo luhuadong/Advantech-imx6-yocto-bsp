@@ -1,0 +1,25 @@
+Index: etc/securetty
+===================================================================
+--- etc/securetty	(revision 1256)
++++ etc/securetty	(working copy)
+@@ -144,6 +144,20 @@
+ ttymxc3
+ ttymxc4
+ ttymxc5
++ttymxc/0
++ttymxc/1
++ttymxc/2
++ttymxc/3
++ttymxc/4
++ttymxc/5
++pts/0
++pts/1
++pts/2
++pts/3
++pts/4
++pts/5
++pts/6
++pts/7
+
+ # Standard serial ports, with devfs
+ tts/0

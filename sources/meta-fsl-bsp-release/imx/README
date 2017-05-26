@@ -1,0 +1,152 @@
+Freescale's 3.10.17-1.0.2 Yocto BSP
+==================================
+
+Release Notes:
+Note this update is for a GPU 2D hang fix only.  This release has been tested in a limited basis and has not 
+gone through a full GA tset cycle.  This update is for kernel, graphics and xserver only.
+
+This BSP is a Freescale release providing support for the following processors
+
+   * Freescale i.MX6Q SABRE Smart Device (imx6qsabresd)
+   * Freescale i.MX6Q SABRE Auto (imx6qsabreauto)
+   * Freescale i.MX6DL SABRE Smart Device (imx6dlsabresd)
+   * Freescale i.MX6DL SABRE Auto (imx6dlsabreauto)
+   * Freescale i.MX6SOLO SABRE Smart Device(imx6solosabresd )
+   * Freescale i.MX6SOLO SABRE Auto (imx6solosabreauto )
+   * Freescale i.MX6 Solo Lite EVK (imx6slevk)
+
+ * i.MX6 U-boot options based on 2013.04 u-boot
+   * Freescale i.MX6SOLO SABRE Auto SPI-NOR (imx6solosabreauto-spi-nor )
+   * Freescale i.MX6SOLO SABRE Auto NAND (imx6solosabreauto-nand )
+   * Freescale i.MX6SOLO SABRE Auto EIM-NOR (imx6solosabreauto-eim-nor )
+   * Freescale i.MX6DL SABRE Auto SPI-NOR (imx6dlsabreauto-spi-nor)
+   * Freescale i.MX6DL SABRE Auto NAND (imx6dlsabreauto-nand)
+   * Freescale i.MX6DL SABRE Auto EIM-NOR (imx6dlsabreauto-eim-nor)
+   * Freescale i.MX6Q SABRE Auto SPI-NOR (imx6qsabreauto-spi-nor)
+   * Freescale i.MX6Q SABRE Auto NAND (imx6qsabreauto-nand-nor)
+   * Freescale i.MX6Q SABRE Auto EIM-NOR (imx6qsabreauto-eim-nor)
+   * Freescale i.MX6Q SABRE SD SATA (imx6qsabresd-sata)
+   * Freescale i.MX6Q SABRE Auto SATA (imx6qsabreauto-sata)
+
+ * i.MX6 new Device Tree configurations
+   * imx6q-sabresd-ldo.dtb
+   * imx6dl-sabresd-ldo.dtb
+   * imx6q-sabresd-hdcp.dtb
+   * imx6dl-sabresd-hdcp.dtb
+   * imx6q-sabreauto-ecspi.dtb
+   * imx6dl-sabreauto-ecspi.dtb
+   * imx6q-sabreauto-gpmi-weim.dtb
+   * imx6dl-sabreauto-gpmi-weim.dtb
+   * imx6sl-evk-ldo.dtb
+   * imx6sl-evk-csi.dtb
+   * imx6q-sabreauto-flexcan1.dtb
+   * imx6dl-sabreauto-flexcan1.dtb
+
+Quick Start Guide
+-----------------
+First install the i.MX Freescale BSP repo
+$: repo init -u git://git.freescale.com/imx/fsl-arm-yocto-bsp.git -b imx-3.10.17-1.0.0_ga
+
+Download the Yocto Freescale Layers
+$: repo sync
+
+Run i.MX Yocto Project Setup
+$: MACHINE=< machine name> source fsl-setup-release.sh -b <build directory> -e <backend fb, dfb, wayland, x11>
+
+This will copy the machine configuration files, then run the Yocto Project community setup 
+and update local.conf and bblayer.conf in build directory with the meta-fsl-bsp-release layer.
+
+After this step, you will have everything to build an image.
+
+Build Configurations
+---------------------
+Freescale has created new images to support multiple graphics back ends.  
+Below is the setup for all the backends with the new image recipes.
+
+Note that <build directory> is the same directory specified in the setup-environment.  If not specified it is a
+directory called "build".
+
+Building X11
+------------
+X11 is default so existing community will work using existing images.    
+$: bitbake fsl-image-x11
+
+Building Frame Buffer (FB)
+---------------------------
+Frame buffer requires a DISTRO_FEATURES change which our setup script will provide in local.conf
+fsl-image-fb provides the frame buffer image.  Note that since gpu-viv-bin-mx6q provides 
+different binaries for each backend, it is recommended to build a clean system to pick up the right gpu frame buffer libraries.
+
+$: MACHINE=<machine name>. ./fsl-setup-release.sh -b <build directory> -e fb
+$: bitbake fsl-image-fb
+
+Building Direct FB (DFB)
+---------------------------
+Direct FB requires a DISTRO_FEATURES change which our setup script will provide in local.conf
+fsl-image-dfb provides the direct frame buffer image.  Note that since gpu-viv-bin-mx6q provides 
+different binaries for each backend, it is recommended to build a clean system to pick up the right gpu directfb libraries.
+
+$: MACHINE=<machine name>. ./fsl-setup-release.sh -b <build directory> -e dfb
+$: bitbake fsl-image-dfb
+
+Building Wayland-Weston (wayland)
+---------------------------
+Wayland Weston requires a DISTRO_FEATURES change which our setup script will provide in local.conf
+fsl-image-wayland provides the wayland weston image.  Note that since gpu-viv-bin-mx6q provides
+different binaries for each backend, it is recommended to build a clean system to pick up the right gpu frame buffer libraries.
+
+$: MACHINE=<machine name>. ./fsl-setup-release.sh -b <build directory> -e wayland
+$: bitbake fsl-image-weston
+
+
+Hardware Floating Point
+-----------------------
+This release enables hardware floating point.  This feature is enabled in both the machine 
+configurations and in the layer.conf (because some machine files exist in community meta-fsl-arm.
+DEFAULTTUNE_mx6 = "cortexa9hf-neon
+
+To build as softare floating point add the following to local.conf
+DEFAULTTUNE_mx6 = "cortexa9-neon"
+
+Note we also provide some binaries with a software floating point version which we switch basis on FP_TAG in layer.conf.
+This release was only tested for hardware floating point.
+
+Restricted Codecs
+-----------------
+Some codecs have recipes in the layer but binaries are not provided in the Yocto fetch system (microsoft, ac3 and aacp)
+These codecs have contractual restrictions that require separate distribution.
+
+Manufacturing Tool
+------------------
+The manufacturing tool image is provided in the 3.10.17-1.0.0 release.  This includes the fsl-image-manufacturing that is used
+to flash the target device.  
+
+End User License Agreement
+--------------------------
+During the Freescale Yocto Community BSP setup-environment process, the Freescale i.MX End User License Agreement (EULA) 
+is displayed. To continue, users must agree to the conditions of this license. The agreement to the terms allows the 
+Yocto build to untar packages from the Freescale mirror. Please read this license agreement carefully during the 
+setup process because, once accepted, all further work in the Yocto environment is tied to this accepted agreement.
+
+Chromium
+---------
+The Chromium browser requires additional layers added in the fsl-release-setup.sh script.   
+To enable chromium requires the following steps
+
+In local.conf 
+- Add in chromium into your list
+CORE_IMAGE_EXTRA_INSTALL += "chromium"
+
+- Add the commercial white list into local.conf. 
+LICENSE_FLAGS_WHITELIST="commercial"
+
+- To enable rendering of WebGL do the following steps after boot.  Add the following lines to  /etc/profile or /usr/bin/google-chrome
+export LD_PRELOAD=/usr/lib/libGAL.so:/usr/lib/libEGL.so:/usr/lib/libGLSLC.so:/usr/lib/libCLC.so:/usr/lib/libGLESv2.so
+
+- Start the Chromium browser
+$google-chrome --use-gl=egl 
+
+
+QT5
+---
+Please use 3.10.31 release for QT5 support.  QT5 has not been tested in the 3.10.17-1.0.2 release

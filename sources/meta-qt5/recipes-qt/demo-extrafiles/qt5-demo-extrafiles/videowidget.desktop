@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Qt5 Videowidget
+Exec=/usr/share/qt5/examples/multimediawidgets/videowidget/videowidget
+Icon=videowidget
+Terminal=false
+Type=Application
+X-MB-SingleInstance=true
+Comment=Qt5 Videowidget
+StartupNotify=false

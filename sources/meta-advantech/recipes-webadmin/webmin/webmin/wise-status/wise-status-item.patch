@@ -1,0 +1,26 @@
+--- webmin/gray-theme/left.cgi	2015-11-25 01:46:14.000000000 +0000
++++ webmin-new/gray-theme/left.cgi	2015-11-25 01:44:35.000000000 +0000
+@@ -108,6 +108,10 @@
+ 	print "<div class='aftericon'><a target=right href='webminlog/' onClick='show_logs(); return false;'>$text{'left_logs'}</a></div></div>\n";
+ 	}
+ 
++# Show wise status link
++print "<div class='linkwithicon'><img src=images/wise-cloud16.gif>\n";
++print "<div class='aftericon'><a target=right href='wise-status.cgi'>WISE Connection Status</a></div></div>\n";
++
+ # Show info link
+ print "<div class='linkwithicon'><img src=images/gohome.gif>\n";
+ print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=status'>$text{'left_home'}</a></div></div>\n";
+--- webmin/blue-theme/left.cgi	2015-11-11 03:20:24.000000000 +0000
++++ webmin-new/blue-theme/left.cgi	2015-11-25 01:53:30.000000000 +0000
+@@ -105,6 +105,10 @@
+ 	print "<div class='aftericon'><a target=right href='webminlog/' onClick='show_logs(); return false;'>$text{'left_logs'}</a></div></div>\n";
+ 	}
+ 
++# Show wise status link
++print "<div class='linkwithicon'><img src=images/wise-cloud16.gif>\n";
++print "<div class='aftericon'><a target=right href='wise-status.cgi'>WISE Connection Status</a></div></div>\n";
++
+ # Show info link
+ print "<div class='linkwithicon'><img src=images/gohome.gif>\n";
+ print "<div class='aftericon'><a target=right href='right.cgi?open=system&open=status'>$text{'left_home'}</a></div></div>\n";

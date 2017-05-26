@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<XMLConfigSettings>
+  <BaseSettings>
+    <RunMode>Standalone</RunMode>
+    <AutoStart>True</AutoStart>
+    <ServerIP>172.22.12.157</ServerIP>
+    <ServerPort>1883</ServerPort>
+    <UserName>admin</UserName>
+    <UserPassword>admin</UserPassword>
+  </BaseSettings>
+  <Profiles>
+    <DeviceName></DeviceName>
+    <DevID></DevID>
+    <SN></SN>
+    <DevType>IoTGW</DevType>
+    <WorkDir></WorkDir>
+    <SWVersion>1.0.0.0</SWVersion>
+    <Product/>
+    <Manufacture/>
+  </Profiles>
+  <Customize>
+    <AmtEn>True</AmtEn>
+    <AmtID>admin</AmtID>
+    <AmtPwd>P@ssw0rd</AmtPwd>
+    <KVMMode>default</KVMMode>
+    <CustVNCPwd>na</CustVNCPwd>
+    <CustVNCPort>5900</CustVNCPort>
+  </Customize>
+</XMLConfigSettings>

@@ -1,0 +1,16 @@
+index_title=WISE WSN Setting
+general=General Configuration
+wsnmanager1=Network1
+wsnmanager2=Network2
+netid1=Network ID
+joinkey1=JoinKey
+netid2=Network ID
+joinkey2=JoinKey
+savewsn=Save WSN config
+exchangewsn=Save&Exchange WSN config
+savewise=Save config and Restart Agent
+save_err=Failed to save config file
+index_display=Type
+index_dustwsn=DustWSN
+index_wifi=WIFI
+index_ble=BLE

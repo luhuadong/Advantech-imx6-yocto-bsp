@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=QT5 Browser
+Exec=/usr/share/qt5/examples/webkitwidgets/browser/browser
+Icon=browser
+Terminal=false
+Type=Application
+X-MB-SingleInstance=true
+Comment=QT5 Browser
+StartupNotify=false

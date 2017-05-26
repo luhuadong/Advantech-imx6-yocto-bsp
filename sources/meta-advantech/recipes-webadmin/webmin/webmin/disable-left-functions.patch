@@ -1,0 +1,74 @@
+diff -Nur webmin-1.620/blue-theme/left.cgi webmin-1.620-new/blue-theme/left.cgi
+--- webmin-1.620/blue-theme/left.cgi	2013-02-03 14:47:26.000000000 +0800
++++ webmin-1.620-new/blue-theme/left.cgi	2015-06-01 15:37:21.087363735 +0800
+@@ -90,12 +90,12 @@
+ 	}
+ 
+ # Show module/help search form
+-if (-r "$root_directory/webmin_search.cgi" &&
+-    $gaccess{'webminsearch'}) {
+-	print "<form action=webmin_search.cgi target=right>\n";
+-	print $text{'left_search'},"&nbsp;";
+-	print &ui_textbox("search", undef, 15);
+-	}
++#if (-r "$root_directory/webmin_search.cgi" &&
++#    $gaccess{'webminsearch'}) {
++#	print "<form action=webmin_search.cgi target=right>\n";
++#	print $text{'left_search'},"&nbsp;";
++#	print &ui_textbox("search", undef, 15);
++#	}
+ 
+ print "<div class='leftlink'><hr></div>\n";
+ 
+@@ -125,10 +125,10 @@
+ 	}
+ 
+ # Show refesh modules link, for master admin
+-if (&foreign_available("webmin")) {
+-	print "<div class='linkwithicon'><img src=images/refresh-small.gif>\n";
+-	print "<div class='aftericon'><a target=right href='webmin/refresh_modules.cgi'>$text{'main_refreshmods'}</a></div></div>\n";
+-	}
++#if (&foreign_available("webmin")) {
++#	print "<div class='linkwithicon'><img src=images/refresh-small.gif>\n";
++#	print "<div class='aftericon'><a target=right href='webmin/refresh_modules.cgi'>$text{'main_refreshmods'}</a></div></div>\n";
++#	}
+ 
+ # Show logout link
+ &get_miniserv_config(\%miniserv);
+diff -Nur webmin-1.620/gray-theme/left.cgi webmin-1.620-new/gray-theme/left.cgi
+--- webmin-1.620/gray-theme/left.cgi	2013-02-03 14:47:29.000000000 +0800
++++ webmin-1.620-new/gray-theme/left.cgi	2015-06-01 15:36:48.931362776 +0800
+@@ -93,12 +93,12 @@
+ 	}
+ 
+ # Show module/help search form
+-if (-r "$root_directory/webmin_search.cgi" &&
+-    $gaccess{'webminsearch'}) {
+-	print "<form action=webmin_search.cgi target=right>\n";
+-	print $text{'left_search'},"&nbsp;";
+-	print &ui_textbox("search", undef, 15);
+-	}
++#if (-r "$root_directory/webmin_search.cgi" &&
++#    $gaccess{'webminsearch'}) {
++#	print "<form action=webmin_search.cgi target=right>\n";
++#	print $text{'left_search'},"&nbsp;";
++#	print &ui_textbox("search", undef, 15);
++#	}
+ 
+ print "<div class='leftlink'><hr></div>\n";
+ 
+@@ -128,10 +128,10 @@
+ 	}
+ 
+ # Show refesh modules link, for master admin
+-if (&foreign_available("webmin")) {
+-	print "<div class='linkwithicon'><img src=images/refresh-small.gif>\n";
+-	print "<div class='aftericon'><a target=right href='webmin/refresh_modules.cgi'>$text{'main_refreshmods'}</a></div></div>\n";
+-	}
++#if (&foreign_available("webmin")) {
++#	print "<div class='linkwithicon'><img src=images/refresh-small.gif>\n";
++#	print "<div class='aftericon'><a target=right href='webmin/refresh_modules.cgi'>$text{'main_refreshmods'}</a></div></div>\n";
++#	}
+ 
+ # Show logout link
+ &get_miniserv_config(\%miniserv);

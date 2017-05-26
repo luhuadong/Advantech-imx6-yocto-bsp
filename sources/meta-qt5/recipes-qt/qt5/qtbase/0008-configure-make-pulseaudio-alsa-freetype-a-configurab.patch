@@ -1,0 +1,52 @@
+From 3923edc900d1b3dd23e0a6af3a32255707cd497c Mon Sep 17 00:00:00 2001
+From: Paul Eggleton <paul.eggleton@linux.intel.com>
+Date: Tue, 28 Feb 2012 15:10:24 +0000
+Subject: [PATCH 08/14] configure: make pulseaudio, alsa, freetype a
+ configurable option
+
+Allows disabling pulseaudio, alsa, freetype support at configure time
+making builds more deterministic.
+
+Upstream-Status: Pending
+
+Signed-off-by: Paul Eggleton <paul.eggleton@linux.intel.com>
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
+---
+ configure | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/configure b/configure
+index 13dd619..66c2ae0 100755
+--- a/configure
++++ b/configure
+@@ -1810,6 +1810,27 @@ while [ "$#" -gt 0 ]; do
+             UNKNOWN_OPT=yes
+         fi
+         ;;
++    pulseaudio)
++        if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
++            CFG_PULSEAUDIO="$VAL"
++        else
++            UNKNOWN_OPT=yes
++        fi
++        ;;
++    alsa)
++        if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
++            CFG_ALSA="$VAL"
++        else
++            UNKNOWN_OPT=yes
++        fi
++        ;;
++    freetype)
++        if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ] || [ "$VAL" = "system" ]; then
++            CFG_LIBFREETYPE="$VAL"
++        else
++            UNKNOWN_OPT=yes
++        fi
++        ;;
+     gtkstyle)
+         if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
+             CFG_QGTKSTYLE="$VAL"
+-- 
+1.8.5.3
+

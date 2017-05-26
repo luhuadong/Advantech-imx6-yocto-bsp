@@ -1,0 +1,252 @@
+diff -Nur appweb-5.2.0/package/linux/appweb.init appweb-5.2.0-new/package/linux/appweb.init
+--- appweb-5.2.0/package/linux/appweb.init	2014-11-01 01:26:19.000000000 +0800
++++ appweb-5.2.0-new/package/linux/appweb.init	2015-02-09 16:21:41.304755652 +0800
+@@ -23,14 +23,14 @@
+ 
+ NAME=appweb
+ APPWEB_NAME="Embedthis Appweb"
+-APPWEB_CMD="/usr/local/bin/${NAME}"
++APPWEB_CMD="/usr/bin/${NAME}"
+ APPWEB_DIR="/etc/appweb"
+ 
+ PATH=/sbin:$PATH
+ PIDFILE=${PIDFILE-/var/run/$NAME.pid}
+ LOCKFILE=${LOCKFILE-/var/lock/$NAME}
+ 
+-MANAGER_CMD=/usr/local/bin/appman
++MANAGER_CMD=/usr/bin/appman
+ MANAGER_SWITCHES="--daemon --program $APPWEB_CMD --home $APPWEB_DIR --pidfile $PIDFILE run"
+ 
+ #
+@@ -40,7 +40,7 @@
+ if [ -f /etc/init.d/functions ] ; then
+     #   Red-Hat
+     . /etc/init.d/functions
+-    . /etc/sysconfig/network
++    #. /etc/sysconfig/network
+ elif [ -f /lib/lsb/init-functions ] ; then
+     #   Debian
+     . /lib/lsb/init-functions
+diff -Nur appweb-5.2.0/projects/appweb-linux-default.mk appweb-5.2.0-new/projects/appweb-linux-default.mk
+--- appweb-5.2.0/projects/appweb-linux-default.mk	2014-11-01 01:26:19.000000000 +0800
++++ appweb-5.2.0-new/projects/appweb-linux-default.mk	2015-02-10 10:20:27.710346158 +0800
+@@ -63,18 +63,19 @@
+ LDFLAGS               += $(LDFLAGS-$(DEBUG))
+ 
+ ME_ROOT_PREFIX        ?= 
+-ME_BASE_PREFIX        ?= $(ME_ROOT_PREFIX)/usr/local
++ME_BASE_PREFIX        ?= $(ME_ROOT_PREFIX)/usr
+ ME_DATA_PREFIX        ?= $(ME_ROOT_PREFIX)/
+ ME_STATE_PREFIX       ?= $(ME_ROOT_PREFIX)/var
+ ME_APP_PREFIX         ?= $(ME_BASE_PREFIX)/lib/$(NAME)
+ ME_VAPP_PREFIX        ?= $(ME_APP_PREFIX)/$(VERSION)
+-ME_BIN_PREFIX         ?= $(ME_ROOT_PREFIX)/usr/local/bin
+-ME_INC_PREFIX         ?= $(ME_ROOT_PREFIX)/usr/local/include
+-ME_LIB_PREFIX         ?= $(ME_ROOT_PREFIX)/usr/local/lib
+-ME_MAN_PREFIX         ?= $(ME_ROOT_PREFIX)/usr/local/share/man
+-ME_SBIN_PREFIX        ?= $(ME_ROOT_PREFIX)/usr/local/sbin
++ME_BIN_PREFIX         ?= $(ME_ROOT_PREFIX)/usr/bin
++ME_INC_PREFIX         ?= $(ME_ROOT_PREFIX)/usr/include
++ME_LIB_PREFIX         ?= $(ME_ROOT_PREFIX)/usr/lib
++ME_MAN_PREFIX         ?= $(ME_ROOT_PREFIX)/usr/share/man
++ME_SBIN_PREFIX        ?= $(ME_ROOT_PREFIX)/usr/sbin
+ ME_ETC_PREFIX         ?= $(ME_ROOT_PREFIX)/etc/$(NAME)
+ ME_WEB_PREFIX         ?= $(ME_ROOT_PREFIX)/var/www/$(NAME)
++ME_WEBCGI_PREFIX      ?= $(ME_ROOT_PREFIX)/var/www/cgi-bin
+ ME_LOG_PREFIX         ?= $(ME_ROOT_PREFIX)/var/log/$(NAME)
+ ME_SPOOL_PREFIX       ?= $(ME_ROOT_PREFIX)/var/spool/$(NAME)
+ ME_CACHE_PREFIX       ?= $(ME_ROOT_PREFIX)/var/spool/$(NAME)/cache
+@@ -1307,7 +1308,7 @@
+ 	cp $(BUILD)/bin/appweb $(ME_VAPP_PREFIX)/bin/appweb ; \
+ 	mkdir -p "$(ME_BIN_PREFIX)" ; \
+ 	rm -f "$(ME_BIN_PREFIX)/appweb" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/bin/appweb" "$(ME_BIN_PREFIX)/appweb" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/bin/appweb" "$(ME_BIN_PREFIX)/appweb" ; \
+ 	if [ "$(ME_COM_SSL)" = 1 ]; then true ; \
+ 	mkdir -p "$(ME_VAPP_PREFIX)/bin" ; \
+ 	cp src/paks/est/ca.crt $(ME_VAPP_PREFIX)/bin/ca.crt ; \
+@@ -1333,7 +1334,7 @@
+ 	mkdir -p "$(ME_ETC_PREFIX)" ; \
+ 	cp src/server/self.crt $(ME_ETC_PREFIX)/self.crt ; \
+ 	cp src/server/self.key $(ME_ETC_PREFIX)/self.key ; \
+-	echo 'set LOG_DIR "$(ME_LOG_PREFIX)"\nset CACHE_DIR "$(ME_CACHE_PREFIX)"\nDocuments "$(ME_WEB_PREFIX)\nListen 80\n<if SSL_MODULE>\nListenSecure 443\n</if>\n' >$(ME_ETC_PREFIX)/install.conf ; \
++	echo 'set LOG_DIR "/var/log/"\nset CACHE_DIR "/var/spool/$(NAME)/cache"\nDocuments "/var/www/$(NAME)"\nListen 80\n<if SSL_MODULE>\nListenSecure 443\n</if>\n' >$(ME_ETC_PREFIX)/install.conf ; \
+ 	mkdir -p "$(ME_VAPP_PREFIX)/bin" ; \
+ 	cp $(BUILD)/bin/libappweb.so $(ME_VAPP_PREFIX)/bin/libappweb.so ; \
+ 	cp $(BUILD)/bin/libhttp.so $(ME_VAPP_PREFIX)/bin/libhttp.so ; \
+@@ -1403,18 +1404,18 @@
+ 	cp src/server/web/test/test.php $(ME_WEB_PREFIX)/test/test.php ; \
+ 	cp src/server/web/test/test.pl $(ME_WEB_PREFIX)/test/test.pl ; \
+ 	cp src/server/web/test/test.py $(ME_WEB_PREFIX)/test/test.py ; \
+-	mkdir -p "$(ME_WEB_PREFIX)/test" ; \
+-	cp src/server/web/test/test.cgi $(ME_WEB_PREFIX)/test/test.cgi ; \
+-	chmod 755 "$(ME_WEB_PREFIX)/test/test.cgi" ; \
+-	cp src/server/web/test/test.pl $(ME_WEB_PREFIX)/test/test.pl ; \
+-	chmod 755 "$(ME_WEB_PREFIX)/test/test.pl" ; \
+-	cp src/server/web/test/test.py $(ME_WEB_PREFIX)/test/test.py ; \
+-	chmod 755 "$(ME_WEB_PREFIX)/test/test.py" ; \
++	mkdir -p "$(ME_WEBCGI_PREFIX)" ; \
++	cp src/server/web/test/test.cgi $(ME_WEBCGI_PREFIX)/test.cgi ; \
++	chmod 755 "$(ME_WEBCGI_PREFIX)/test.cgi" ; \
++	cp src/server/web/test/test.pl $(ME_WEBCGI_PREFIX)/test.pl ; \
++	chmod 755 "$(ME_WEBCGI_PREFIX)/test.pl" ; \
++	cp src/server/web/test/test.py $(ME_WEBCGI_PREFIX)/test.py ; \
++	chmod 755 "$(ME_WEBCGI_PREFIX)/test.py" ; \
+ 	mkdir -p "$(ME_VAPP_PREFIX)/bin" ; \
+ 	cp $(BUILD)/bin/appman $(ME_VAPP_PREFIX)/bin/appman ; \
+ 	mkdir -p "$(ME_BIN_PREFIX)" ; \
+ 	rm -f "$(ME_BIN_PREFIX)/appman" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/bin/appman" "$(ME_BIN_PREFIX)/appman" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/bin/appman" "$(ME_BIN_PREFIX)/appman" ; \
+ 	mkdir -p "$(ME_ROOT_PREFIX)/etc/init.d" ; \
+ 	cp package/linux/appweb.init $(ME_ROOT_PREFIX)/etc/init.d/appweb ; \
+ 	chmod 755 "$(ME_ROOT_PREFIX)/etc/init.d/appweb" ; \
+@@ -1423,7 +1424,7 @@
+ 	cp $(BUILD)/bin/esp $(ME_VAPP_PREFIX)/bin/appesp ; \
+ 	mkdir -p "$(ME_BIN_PREFIX)" ; \
+ 	rm -f "$(ME_BIN_PREFIX)/appesp" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/bin/appesp" "$(ME_BIN_PREFIX)/appesp" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/bin/appesp" "$(ME_BIN_PREFIX)/appesp" ; \
+ 	fi ; \
+ 	if [ "$(ME_COM_ESP)" = 1 ]; then true ; \
+ 	mkdir -p "$(ME_VAPP_PREFIX)/esp/esp-html-mvc/5.2.0" ; \
+@@ -1483,94 +1484,94 @@
+ 	cp $(BUILD)/inc/me.h $(ME_VAPP_PREFIX)/inc/me.h ; \
+ 	mkdir -p "$(ME_INC_PREFIX)/appweb" ; \
+ 	rm -f "$(ME_INC_PREFIX)/appweb/me.h" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/inc/me.h" "$(ME_INC_PREFIX)/appweb/me.h" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/inc/me.h" "$(ME_INC_PREFIX)/appweb/me.h" ; \
+ 	cp src/paks/osdep/osdep.h $(ME_VAPP_PREFIX)/inc/osdep.h ; \
+ 	mkdir -p "$(ME_INC_PREFIX)/appweb" ; \
+ 	rm -f "$(ME_INC_PREFIX)/appweb/osdep.h" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/inc/osdep.h" "$(ME_INC_PREFIX)/appweb/osdep.h" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/inc/osdep.h" "$(ME_INC_PREFIX)/appweb/osdep.h" ; \
+ 	cp src/appweb.h $(ME_VAPP_PREFIX)/inc/appweb.h ; \
+ 	mkdir -p "$(ME_INC_PREFIX)/appweb" ; \
+ 	rm -f "$(ME_INC_PREFIX)/appweb/appweb.h" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/inc/appweb.h" "$(ME_INC_PREFIX)/appweb/appweb.h" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/inc/appweb.h" "$(ME_INC_PREFIX)/appweb/appweb.h" ; \
+ 	cp src/customize.h $(ME_VAPP_PREFIX)/inc/customize.h ; \
+ 	mkdir -p "$(ME_INC_PREFIX)/appweb" ; \
+ 	rm -f "$(ME_INC_PREFIX)/appweb/customize.h" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/inc/customize.h" "$(ME_INC_PREFIX)/appweb/customize.h" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/inc/customize.h" "$(ME_INC_PREFIX)/appweb/customize.h" ; \
+ 	cp src/paks/est/est.h $(ME_VAPP_PREFIX)/inc/est.h ; \
+ 	mkdir -p "$(ME_INC_PREFIX)/appweb" ; \
+ 	rm -f "$(ME_INC_PREFIX)/appweb/est.h" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/inc/est.h" "$(ME_INC_PREFIX)/appweb/est.h" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/inc/est.h" "$(ME_INC_PREFIX)/appweb/est.h" ; \
+ 	cp src/paks/http/http.h $(ME_VAPP_PREFIX)/inc/http.h ; \
+ 	mkdir -p "$(ME_INC_PREFIX)/appweb" ; \
+ 	rm -f "$(ME_INC_PREFIX)/appweb/http.h" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/inc/http.h" "$(ME_INC_PREFIX)/appweb/http.h" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/inc/http.h" "$(ME_INC_PREFIX)/appweb/http.h" ; \
+ 	cp src/paks/mpr/mpr.h $(ME_VAPP_PREFIX)/inc/mpr.h ; \
+ 	mkdir -p "$(ME_INC_PREFIX)/appweb" ; \
+ 	rm -f "$(ME_INC_PREFIX)/appweb/mpr.h" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/inc/mpr.h" "$(ME_INC_PREFIX)/appweb/mpr.h" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/inc/mpr.h" "$(ME_INC_PREFIX)/appweb/mpr.h" ; \
+ 	cp src/paks/pcre/pcre.h $(ME_VAPP_PREFIX)/inc/pcre.h ; \
+ 	mkdir -p "$(ME_INC_PREFIX)/appweb" ; \
+ 	rm -f "$(ME_INC_PREFIX)/appweb/pcre.h" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/inc/pcre.h" "$(ME_INC_PREFIX)/appweb/pcre.h" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/inc/pcre.h" "$(ME_INC_PREFIX)/appweb/pcre.h" ; \
+ 	cp src/paks/sqlite/sqlite3.h $(ME_VAPP_PREFIX)/inc/sqlite3.h ; \
+ 	mkdir -p "$(ME_INC_PREFIX)/appweb" ; \
+ 	rm -f "$(ME_INC_PREFIX)/appweb/sqlite3.h" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/inc/sqlite3.h" "$(ME_INC_PREFIX)/appweb/sqlite3.h" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/inc/sqlite3.h" "$(ME_INC_PREFIX)/appweb/sqlite3.h" ; \
+ 	if [ "$(ME_COM_ESP)" = 1 ]; then true ; \
+ 	mkdir -p "$(ME_VAPP_PREFIX)/inc" ; \
+ 	cp src/paks/esp/esp.h $(ME_VAPP_PREFIX)/inc/esp.h ; \
+ 	mkdir -p "$(ME_INC_PREFIX)/appweb" ; \
+ 	rm -f "$(ME_INC_PREFIX)/appweb/esp.h" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/inc/esp.h" "$(ME_INC_PREFIX)/appweb/esp.h" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/inc/esp.h" "$(ME_INC_PREFIX)/appweb/esp.h" ; \
+ 	fi ; \
+ 	if [ "$(ME_COM_EJS)" = 1 ]; then true ; \
+ 	mkdir -p "$(ME_VAPP_PREFIX)/inc" ; \
+ 	cp src/paks/ejs/ejs.h $(ME_VAPP_PREFIX)/inc/ejs.h ; \
+ 	mkdir -p "$(ME_INC_PREFIX)/appweb" ; \
+ 	rm -f "$(ME_INC_PREFIX)/appweb/ejs.h" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/inc/ejs.h" "$(ME_INC_PREFIX)/appweb/ejs.h" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/inc/ejs.h" "$(ME_INC_PREFIX)/appweb/ejs.h" ; \
+ 	cp src/paks/ejs/ejs.slots.h $(ME_VAPP_PREFIX)/inc/ejs.slots.h ; \
+ 	mkdir -p "$(ME_INC_PREFIX)/appweb" ; \
+ 	rm -f "$(ME_INC_PREFIX)/appweb/ejs.slots.h" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/inc/ejs.slots.h" "$(ME_INC_PREFIX)/appweb/ejs.slots.h" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/inc/ejs.slots.h" "$(ME_INC_PREFIX)/appweb/ejs.slots.h" ; \
+ 	cp src/paks/ejs/ejsByteGoto.h $(ME_VAPP_PREFIX)/inc/ejsByteGoto.h ; \
+ 	mkdir -p "$(ME_INC_PREFIX)/appweb" ; \
+ 	rm -f "$(ME_INC_PREFIX)/appweb/ejsByteGoto.h" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/inc/ejsByteGoto.h" "$(ME_INC_PREFIX)/appweb/ejsByteGoto.h" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/inc/ejsByteGoto.h" "$(ME_INC_PREFIX)/appweb/ejsByteGoto.h" ; \
+ 	fi ; \
+ 	mkdir -p "$(ME_VAPP_PREFIX)/doc/man1" ; \
+ 	cp doc/public/man/appman.1 $(ME_VAPP_PREFIX)/doc/man1/appman.1 ; \
+ 	mkdir -p "$(ME_MAN_PREFIX)/man1" ; \
+ 	rm -f "$(ME_MAN_PREFIX)/man1/appman.1" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/doc/man1/appman.1" "$(ME_MAN_PREFIX)/man1/appman.1" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/doc/man1/appman.1" "$(ME_MAN_PREFIX)/man1/appman.1" ; \
+ 	cp doc/public/man/appweb.1 $(ME_VAPP_PREFIX)/doc/man1/appweb.1 ; \
+ 	mkdir -p "$(ME_MAN_PREFIX)/man1" ; \
+ 	rm -f "$(ME_MAN_PREFIX)/man1/appweb.1" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/doc/man1/appweb.1" "$(ME_MAN_PREFIX)/man1/appweb.1" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/doc/man1/appweb.1" "$(ME_MAN_PREFIX)/man1/appweb.1" ; \
+ 	cp doc/public/man/appwebMonitor.1 $(ME_VAPP_PREFIX)/doc/man1/appwebMonitor.1 ; \
+ 	mkdir -p "$(ME_MAN_PREFIX)/man1" ; \
+ 	rm -f "$(ME_MAN_PREFIX)/man1/appwebMonitor.1" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/doc/man1/appwebMonitor.1" "$(ME_MAN_PREFIX)/man1/appwebMonitor.1" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/doc/man1/appwebMonitor.1" "$(ME_MAN_PREFIX)/man1/appwebMonitor.1" ; \
+ 	cp doc/public/man/authpass.1 $(ME_VAPP_PREFIX)/doc/man1/authpass.1 ; \
+ 	mkdir -p "$(ME_MAN_PREFIX)/man1" ; \
+ 	rm -f "$(ME_MAN_PREFIX)/man1/authpass.1" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/doc/man1/authpass.1" "$(ME_MAN_PREFIX)/man1/authpass.1" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/doc/man1/authpass.1" "$(ME_MAN_PREFIX)/man1/authpass.1" ; \
+ 	cp doc/public/man/esp.1 $(ME_VAPP_PREFIX)/doc/man1/esp.1 ; \
+ 	mkdir -p "$(ME_MAN_PREFIX)/man1" ; \
+ 	rm -f "$(ME_MAN_PREFIX)/man1/esp.1" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/doc/man1/esp.1" "$(ME_MAN_PREFIX)/man1/esp.1" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/doc/man1/esp.1" "$(ME_MAN_PREFIX)/man1/esp.1" ; \
+ 	cp doc/public/man/http.1 $(ME_VAPP_PREFIX)/doc/man1/http.1 ; \
+ 	mkdir -p "$(ME_MAN_PREFIX)/man1" ; \
+ 	rm -f "$(ME_MAN_PREFIX)/man1/http.1" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/doc/man1/http.1" "$(ME_MAN_PREFIX)/man1/http.1" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/doc/man1/http.1" "$(ME_MAN_PREFIX)/man1/http.1" ; \
+ 	cp doc/public/man/makerom.1 $(ME_VAPP_PREFIX)/doc/man1/makerom.1 ; \
+ 	mkdir -p "$(ME_MAN_PREFIX)/man1" ; \
+ 	rm -f "$(ME_MAN_PREFIX)/man1/makerom.1" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/doc/man1/makerom.1" "$(ME_MAN_PREFIX)/man1/makerom.1" ; \
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/doc/man1/makerom.1" "$(ME_MAN_PREFIX)/man1/makerom.1" ; \
+ 	cp doc/public/man/manager.1 $(ME_VAPP_PREFIX)/doc/man1/manager.1 ; \
+ 	mkdir -p "$(ME_MAN_PREFIX)/man1" ; \
+ 	rm -f "$(ME_MAN_PREFIX)/man1/manager.1" ; \
+-	ln -s "$(ME_VAPP_PREFIX)/doc/man1/manager.1" "$(ME_MAN_PREFIX)/man1/manager.1"
++	ln -s "/usr/lib/$(NAME)/$(VERSION)/doc/man1/manager.1" "$(ME_MAN_PREFIX)/man1/manager.1"
+ 
+ #
+ #   start
+diff -Nur appweb-5.2.0/src/server/appweb.conf appweb-5.2.0-new/src/server/appweb.conf
+--- appweb-5.2.0/src/server/appweb.conf	2014-11-01 01:26:17.000000000 +0800
++++ appweb-5.2.0-new/src/server/appweb.conf	2015-02-10 10:17:43.318342119 +0800
+@@ -18,7 +18,7 @@
+ #   errors and debug trace for the whole server including virtual hosts.
+ #   This is overridden by appweb command line args.
+ #
+-ErrorLog "error.log" size=10MB level=2 backup=5 anew
++ErrorLog "appweb.log" size=10MB level=2 backup=5 anew
+ 
+ #
+ #   The user and group account to run as. The fake name APPWEB will change
+diff -Nur appweb-5.2.0/src/server/sample.conf appweb-5.2.0-new/src/server/sample.conf
+--- appweb-5.2.0/src/server/sample.conf	2014-11-01 01:26:17.000000000 +0800
++++ appweb-5.2.0-new/src/server/sample.conf	2015-02-10 10:18:32.346343323 +0800
+@@ -17,7 +17,7 @@
+ #   server including virtual hosts. This is overridden by appweb 
+ #   command line args: -v and --log.
+ #
+-ErrorLog "error.log" size=10MB level=2 backup=5 anew
++ErrorLog "appweb.log" size=10MB level=2 backup=5 anew
+ 
+ #
+ #   Request and operational trace log

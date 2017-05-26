@@ -1,0 +1,31 @@
+#! /bin/sh
+
+nr=`nrdustwsn`
+
+case "$1" in
+  start)
+	echo -n "Starting serialmux: "
+	if [ $nr -gt 0 ]; then
+		/usr/bin/dust_serialmux -c /etc/serial_mux0.cfg&
+		if [ $nr -gt 1 ]; then
+			/usr/bin/dust_serialmux -c /etc/serial_mux1.cfg&
+		fi
+	fi
+	echo "done"
+	;;
+  stop)
+	echo -n "Stopping serialmux: "
+	killall dust_serialmux
+	echo "done"
+	;;
+  restart)
+  	$0 stop
+	$0 start
+	;;
+  *)
+	echo "Usage: dustlink { start | stop | restart }" >&2
+	exit 1
+	;;
+esac
+
+exit 0

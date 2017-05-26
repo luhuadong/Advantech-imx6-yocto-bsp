@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# Webif post-install script.
+#
+
+# initialize default webif theme
+# create symlink to /www/themes/zephyr (do NOT use INSTROOT in first arg).
+@rm -rf "${WEBIF_INSTROOT}/www/themes/active" >&- 2>&-
+ln -sf "/www/themes/zephyr" "${WEBIF_INSTROOT}/www/themes/active" >&- 2>&-
+[ $? != 0 ] && {
+        # if fs doesn't support symlinks, do a copy
+        mkdir -p "${WEBIF_INSTROOT}/www/themes/active"
+        cp -r "${WEBIF_INSTROOT}/www/themes/zephyr/" "${WEBIF_INSTROOT}/www/themes/active/"
+}
+
+# initialize webifmetabin binaries
+# todo: move back to makefile because this won't be cleaned up good
+ln -sf /usr/bin/webifmetabin "${WEBIF_INSTROOT}/usr/bin/bstrip"
+ln -sf /usr/bin/webifmetabin "${WEBIF_INSTROOT}/usr/bin/webif-page"
+ln -sf /usr/bin/webifmetabin "${WEBIF_INSTROOT}/usr/bin/wepkeygen"
+ln -sf /usr/bin/webifmetabin "${WEBIF_INSTROOT}/usr/bin/int2human"
+
+exit 0

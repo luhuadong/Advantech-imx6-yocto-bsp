@@ -1,0 +1,404 @@
+diff -Nur webmin-1.620/net/debian-linux-lib.pl webmin-1.620.new/net/debian-linux-lib.pl
+--- webmin-1.620/net/debian-linux-lib.pl	2013-02-03 14:47:04.000000000 +0800
++++ webmin-1.620.new/net/debian-linux-lib.pl	2015-06-04 15:12:23.307046067 +0800
+@@ -1060,6 +1060,7 @@
+ # Returns 1 if managing IPv6 interfaces is supported
+ sub supports_address6
+ {
++return 0;
+ local ($iface) = @_;
+ return !$iface || $iface->{'virtual'} eq '';
+ }
+@@ -1068,13 +1069,13 @@
+ # for bridging)
+ sub supports_no_address
+ {
+-return 1;
++return 0;
+ }
+ 
+ # Bridge interfaces can be created on debian
+ sub supports_bridges
+ {
+-return 1;
++return 0;
+ }
+ 
+ 1;
+diff -Nur webmin-1.620/net/edit_aifc.cgi webmin-1.620.new/net/edit_aifc.cgi
+--- webmin-1.620/net/edit_aifc.cgi	2013-02-03 14:47:03.000000000 +0800
++++ webmin-1.620.new/net/edit_aifc.cgi	2015-06-04 15:22:45.211064607 +0800
+@@ -185,9 +185,9 @@
+ 	}
+ else {
+ 	@buts = ( [ undef, $text{'save'} ] );
+-	if ($access{'delete'}) {
+-		push(@buts, [ 'delete', $text{'delete'} ]);
+-		}
++#	if ($access{'delete'}) {
++#		push(@buts, [ 'delete', $text{'delete'} ]);
++#		}
+ 	}
+ print &ui_form_end(\@buts);
+ 
+diff -Nur webmin-1.620/net/edit_bifc.cgi webmin-1.620.new/net/edit_bifc.cgi
+--- webmin-1.620/net/edit_bifc.cgi	2013-02-03 14:47:04.000000000 +0800
++++ webmin-1.620.new/net/edit_bifc.cgi	2015-06-26 15:25:48.899734622 +0800
+@@ -102,20 +102,20 @@
+ print &ui_table_row($text{'ifcs_name'}, $namefield);
+ 
+ # Activate at boot?
+-if (&can_edit("up", $b) && $access{'up'}) {
+-	$upfield = &ui_yesno_radio("up", !$b || $b->{'up'});
+-	}
+-else {
++#if (&can_edit("up", $b) && $access{'up'}) {
++#	$upfield = &ui_yesno_radio("up", !$b || $b->{'up'});
++#	}
++#else {
+ 	$upfield = !$b ? $text{'yes'} :
+ 		   $b->{'up'} ? $text{'yes'} : $text{'no'};
+-	}
++#	}
+ print &ui_table_row($text{'bifc_act'}, $upfield);
+ 
+ # IP address source. This can either be DHCP, BootP or a fixed IP,
+ # netmask and broadcast
+ $virtual = (!$b && $in{'virtual'}) || ($b && $b->{'virtual'} ne "");
+ $dhcp = &can_edit("dhcp") && !$virtual;
+-$bootp = &can_edit("bootp") && !$virtual;
++#$bootp = &can_edit("bootp") && !$virtual;
+ if (defined(&supports_no_address) && &supports_no_address()) {
+ 	# Having no address is allowed
+ 	$canno = 1;
+@@ -307,9 +307,9 @@
+ 		}
+ 	else {
+ 		push(@buts, [ "activate", $text{'bifc_apply'} ]);
+-		if ($access{'delete'}) {
+-			push(@buts, [ "unapply", $text{'bifc_dapply'} ]);
+-			}
++#		if ($access{'delete'}) {
++#			push(@buts, [ "unapply", $text{'bifc_dapply'} ]);
++#			}
+ 		}
+ 	}
+ else {
+@@ -321,15 +321,15 @@
+ 	else {
+ 		push(@buts, [ undef, $text{'save'} ])
+ 			unless $always_apply_ifcs;
+-		if (!($b->{'bootp'} || $b->{'dhcp'}) ||
+-		    defined(&apply_interface)) {
++#		if (!($b->{'bootp'} || $b->{'dhcp'}) ||
++#		    defined(&apply_interface)) {
+ 			push(@buts, [ "activate", $text{'bifc_apply'} ]);
+-			}
+-		if ($access{'delete'}) {
+-			push(@buts, [ "unapply", $text{'bifc_dapply'} ]);
+-			push(@buts, [ "delete", $text{'delete'} ])
+-				unless $noos_support_delete_ifcs;
+-			}
++#			}
++#		if ($access{'delete'}) {
++#			push(@buts, [ "unapply", $text{'bifc_dapply'} ]);
++#			push(@buts, [ "delete", $text{'delete'} ])
++#				unless $noos_support_delete_ifcs;
++#			}
+ 		}
+ 	}
+ print &ui_form_end(\@buts);
+diff -Nur webmin-1.620/net/index.cgi webmin-1.620.new/net/index.cgi
+--- webmin-1.620/net/index.cgi	2013-02-03 14:47:04.000000000 +0800
++++ webmin-1.620.new/net/index.cgi	2015-06-04 10:23:09.014528721 +0800
+@@ -7,7 +7,8 @@
+ 	&help_search_link("ifconfig hosts resolve.conf nsswitch.conf", "man"));
+ 
+ $zone = &running_in_zone() || &running_in_vserver();
+-foreach $i ('ifcs', 'routes', 'dns', 'hosts',
++#foreach $i ('ifcs', 'routes', 'dns', 'hosts',
++foreach $i ('ifcs', 'routes', 'dns',
+ 	    ($config{'ipnodes_file'} ? ('ipnodes') : ( ))) {
+ 	next if (!$access{$i});
+ 	next if ($i eq "ifcs" && $zone);
+diff -Nur webmin-1.620/net/linux-lib.pl webmin-1.620.new/net/linux-lib.pl
+--- webmin-1.620/net/linux-lib.pl	2013-02-03 14:47:04.000000000 +0800
++++ webmin-1.620.new/net/linux-lib.pl	2015-06-26 16:14:37.087821914 +0800
+@@ -109,6 +109,9 @@
+         else { $cmd .= "ifdown $a->{'fullname'}"; }
+ 	}
+ else {
++  if($a->{'dhcp'} == 1) {
++    $cmd .= "ifdown $a->{'name'};ifup $a->{'name'}";
++  } else {
+ 	# Build ifconfig command manually
+ 	if($a->{'vlan'} == 1) {
+ 		$cmd .= "ifconfig $a->{'physical'}.$a->{'vlanid'}";
+@@ -126,6 +129,7 @@
+ 	if ($a->{'up'}) { $cmd .= " up"; }
+ 	else { $cmd .= " down"; }
+ 	}
++  }
+ local $out = &backquote_logged("$cmd 2>&1");
+ if ($?) { &error($out); }
+ 
+@@ -136,23 +140,23 @@
+ 	if ($?) { &error($out); }
+ 	}
+ 
+-if ($a->{'virtual'} eq '') {
+-	# Remove old IPv6 addresses
+-	local $l = &backquote_command("ifconfig $a->{'name'}");
+-	while($l =~ s/inet6 addr:\s*(\S+)\/(\d+)\s+Scope:(\S+)//) {
+-		local $cmd = "ifconfig $a->{'name'} inet6 del $1/$2 2>&1";
+-		$out = &backquote_logged($cmd);
+-		&error("Failed to remove old IPv6 address : $out") if ($?);
+-		}
+-
+-	# Add IPv6 addresses
+-	for(my $i=0; $i<@{$a->{'address6'}}; $i++) {
+-		local $cmd = "ifconfig $a->{'name'} inet6 add ".
+-		     $a->{'address6'}->[$i]."/".$a->{'netmask6'}->[$i]." 2>&1";
+-		$out = &backquote_logged($cmd);
+-		&error("Failed to add IPv6 address : $out") if ($?);
+-		}
+-	}
++#if ($a->{'virtual'} eq '') {
++#	# Remove old IPv6 addresses
++#	local $l = &backquote_command("ifconfig $a->{'name'}");
++#	while($l =~ s/inet6 addr:\s*(\S+)\/(\d+)\s+Scope:(\S+)//) {
++#		local $cmd = "ifconfig $a->{'name'} inet6 del $1/$2 2>&1";
++#		$out = &backquote_logged($cmd);
++#		&error("Failed to remove old IPv6 address : $out") if ($?);
++#		}
++#
++#	# Add IPv6 addresses
++#	for(my $i=0; $i<@{$a->{'address6'}}; $i++) {
++#		local $cmd = "ifconfig $a->{'name'} inet6 add ".
++#		     $a->{'address6'}->[$i]."/".$a->{'netmask6'}->[$i]." 2>&1";
++#		$out = &backquote_logged($cmd);
++#		&error("Failed to add IPv6 address : $out") if ($?);
++#		}
++#	}
+ }
+ 
+ # deactivate_interface(&details)
+@@ -171,11 +175,11 @@
+ 	local $out = &backquote_logged("ifconfig $name 0 2>&1");
+ 	}
+ # Delete all v6 addresses
+-for(my $i=0; $i<@{$a->{'address6'}}; $i++) {
+-	local $cmd = "ifconfig $a->{'name'} inet6 del ".
+-		     $a->{'address6'}->[$i]."/".$a->{'netmask6'}->[$i];
+-	&backquote_logged("$cmd 2>&1");
+-	}
++#for(my $i=0; $i<@{$a->{'address6'}}; $i++) {
++#	local $cmd = "ifconfig $a->{'name'} inet6 del ".
++#		     $a->{'address6'}->[$i]."/".$a->{'netmask6'}->[$i];
++#	&backquote_logged("$cmd 2>&1");
++#	}
+ 
+ # Check if still up somehow
+ local ($still) = grep { $_->{'fullname'} eq $name } &active_interfaces();
+@@ -457,15 +461,15 @@
+ 	close(RESOLV);
+ 	$dnsfile = "/etc/resolv.conf";
+ 	}
+-&open_readfile(SWITCH, "/etc/nsswitch.conf");
+-while(<SWITCH>) {
+-	s/\r|\n//g;
+-	if (/^\s*hosts:\s+(.*)/) {
+-		$dns->{'order'} = $1;
+-		}
+-	}
+-close(SWITCH);
+-$dns->{'files'} = [ $dnsfile, "/etc/nsswitch.conf" ];
++#&open_readfile(SWITCH, "/etc/nsswitch.conf");
++#while(<SWITCH>) {
++#	s/\r|\n//g;
++#	if (/^\s*hosts:\s+(.*)/) {
++#		$dns->{'order'} = $1;
++#		}
++#	}
++#close(SWITCH);
++#$dns->{'files'} = [ $dnsfile, "/etc/nsswitch.conf" ];
+ return $dns;
+ }
+ 
+@@ -559,21 +563,21 @@
+ 	}
+ 
+ # Update resolution order in nsswitch.conf
+-&lock_file("/etc/nsswitch.conf");
+-&open_readfile(SWITCH, "/etc/nsswitch.conf");
+-local @switch = <SWITCH>;
+-close(SWITCH);
+-&open_tempfile(SWITCH, ">/etc/nsswitch.conf");
+-foreach (@switch) {
+-	if (/^\s*hosts:\s+/) {
+-		&print_tempfile(SWITCH, "hosts:\t$_[0]->{'order'}\n");
+-		}
+-	else {
+-		&print_tempfile(SWITCH, $_);
+-		}
+-	}
+-&close_tempfile(SWITCH);
+-&unlock_file("/etc/nsswitch.conf");
++#&lock_file("/etc/nsswitch.conf");
++#&open_readfile(SWITCH, "/etc/nsswitch.conf");
++#local @switch = <SWITCH>;
++#close(SWITCH);
++#&open_tempfile(SWITCH, ">/etc/nsswitch.conf");
++#foreach (@switch) {
++#	if (/^\s*hosts:\s+/) {
++#		&print_tempfile(SWITCH, "hosts:\t$_[0]->{'order'}\n");
++#		}
++#	else {
++#		&print_tempfile(SWITCH, $_);
++#		}
++#	}
++#&close_tempfile(SWITCH);
++#&unlock_file("/etc/nsswitch.conf");
+ 
+ # Update SuSE config file
+ if ($suse_dns_config && $rc->{'USE_NIS_FOR_RESOLVING'}) {
+diff -Nur webmin-1.620/net/list_dns.cgi webmin-1.620.new/net/list_dns.cgi
+--- webmin-1.620/net/list_dns.cgi	2013-02-03 14:47:03.000000000 +0800
++++ webmin-1.620.new/net/list_dns.cgi	2015-06-04 10:23:30.254529354 +0800
+@@ -27,9 +27,9 @@
+ 
+ # DNS resolution order
+ $order = &order_input($dns);
+-if ($order) {
+-	print &ui_table_row($text{'dns_order'}, $order, 3);
+-	}
++#if ($order) {
++#	print &ui_table_row($text{'dns_order'}, $order, 3);
++#	}
+ 
+ # Check if hostname is set from DHCP
+ # XXX not done yet
+diff -Nur webmin-1.620/net/list_ifcs.cgi webmin-1.620.new/net/list_ifcs.cgi
+--- webmin-1.620/net/list_ifcs.cgi	2013-02-03 14:47:04.000000000 +0800
++++ webmin-1.620.new/net/list_ifcs.cgi	2015-06-04 15:46:57.015107887 +0800
+@@ -5,7 +5,7 @@
+ require './net-lib.pl';
+ &ReadParse();
+ $access{'ifcs'} || &error($text{'ifcs_ecannot'});
+-$allow_add = &can_create_iface() && !$noos_support_add_ifcs;
++#$allow_add = &can_create_iface() && !$noos_support_add_ifcs;
+ &ui_print_header(undef, $text{'ifcs_title'}, "");
+ 
+ # Start tabs for active/boot time interfaces
+@@ -39,7 +39,7 @@
+ 		push(@links,
+ 		     "<a href='edit_aifc.cgi?new=1'>$text{'ifcs_add'}</a>");
+ 		}
+-	print &ui_links_row(\@links);
++#	print &ui_links_row(\@links);
+ 	print &ui_columns_start([ $access{'ifcs'} >= 2 ? ( "" ) : ( ),
+ 				  $text{'ifcs_name'},
+ 				  $text{'ifcs_type'},
+@@ -92,7 +92,8 @@
+ 			}
+ 		push(@cols, $a->{'up'} ? $text{'ifcs_up'} :
+ 			"<font color=#ff0000>$text{'ifcs_down'}</font>");
+-		if ($a->{'edit'} && &can_iface($a)) {
++#		if ($a->{'edit'} && &can_iface($a)) {
++		if (0) {
+ 			print &ui_checked_columns_row(\@cols, \@tds, "d",
+ 						      $a->{'fullname'});
+ 			}
+@@ -101,17 +102,17 @@
+ 			}
+ 		}
+ 	print &ui_columns_end();
+-	print &ui_links_row(\@links);
+-	if ($access{'ifcs'} >= 2) {
+-		print &ui_form_end([ [ "delete", $text{'index_delete1'} ] ]);
+-		}
++#	print &ui_links_row(\@links);
++#	if ($access{'ifcs'} >= 2) {
++#		print &ui_form_end([ [ "delete", $text{'index_delete1'} ] ]);
++#		}
+ 	print &ui_tabs_end_tab();
+ 	}
+ 
+ # Show interfaces that get activated at boot
+ print &ui_tabs_start_tab("mode", "boot");
+ print $text{'ifcs_bootdesc'},"<p>\n";
+-print &ui_form_start("delete_bifcs.cgi", "post");
++#print &ui_form_start("delete_bifcs.cgi", "post");
+ @links = ( &select_all_link("b", 1),
+ 	   &select_invert_link("b", 1) );
+ if ($allow_add) {
+@@ -132,7 +133,7 @@
+ if ($allow_add && defined(&supports_ranges) && &supports_ranges()) {
+ 	push(@links, "<a href='edit_range.cgi?new=1'>$text{'ifcs_radd'}</a>");
+ 	}
+-print &ui_links_row(\@links);
++#print &ui_links_row(\@links);
+ @tds = ( "width=5 valign=top", "width=20% valign=top", "width=20% valign=top",
+ 	 "width=20% valign=top", "width=20% valign=top" );
+ push(@tds, "width=20% valign=top xxx") if (&supports_address6());
+@@ -222,7 +223,8 @@
+ 			}
+ 		}
+ 	push(@cols, $a->{'up'} ? $text{'yes'} : $text{'no'});
+-	if ($can) {
++#	if ($can) {
++	if (0) {
+ 		print &ui_checked_columns_row(\@cols, \@mytds, "b",
+ 					      $a->{'fullname'});
+ 		}
+@@ -231,11 +233,11 @@
+ 		}
+ 	}
+ print &ui_columns_end();
+-print &ui_links_row(\@links);
+-print &ui_form_end([ [ "delete", $text{'index_delete2'} ],
+-		     [ "deleteapply", $text{'index_delete3'} ],
+-		     undef,
+-		     [ "apply", $text{'index_apply2'} ] ]);
++#print &ui_links_row(\@links);
++#print &ui_form_end([ [ "delete", $text{'index_delete2'} ],
++#		     [ "deleteapply", $text{'index_delete3'} ],
++#		     undef,
++#		     [ "apply", $text{'index_apply2'} ] ]);
+ print &ui_tabs_end_tab();
+ 
+ print &ui_tabs_end(1);
+diff -Nur webmin-1.620/net/save_bifc.cgi webmin-1.620.new/net/save_bifc.cgi
+--- webmin-1.620/net/save_bifc.cgi	2013-02-03 14:47:04.000000000 +0800
++++ webmin-1.620.new/net/save_bifc.cgi	2015-06-26 16:15:11.371822936 +0800
+@@ -131,8 +131,8 @@
+ 
+ 	# Validate and store inputs
+ 	if ($in{'mode'} eq 'dhcp' || $in{'mode'} eq 'bootp') {
+-		$in{'activate'} && !defined(&apply_interface) &&
+-			&error($text{'bifc_eapply'});
++#		$in{'activate'} && !defined(&apply_interface) &&
++#			&error($text{'bifc_eapply'});
+ 		$b->{$in{'mode'}}++;
+ 		$auto++;
+ 		}
+@@ -210,13 +210,13 @@
+ 		}
+ 
+ 	# Activate at boot flag
+-	if ($in{'new'} && !$access{'up'} ||
+-	    &can_edit("up", $b) && $in{'up'} && $access{'up'}) {
+-		$b->{'up'}++;
+-		}
+-	elsif (!$access{'up'}) {
++#	if ($in{'new'} && !$access{'up'} ||
++#	    &can_edit("up", $b) && $in{'up'} && $access{'up'}) {
++#		$b->{'up'}++;
++#		}
++#	elsif (!$access{'up'}) {
+ 		$b->{'up'} = $oldb->{'up'};
+-		}
++#		}
+ 
+ 	# Save IPv6 addresses
+ 	if (&supports_address6($b) && $in{'mode6'} eq 'auto') {

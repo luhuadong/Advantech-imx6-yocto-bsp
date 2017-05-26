@@ -1,0 +1,12 @@
+Index: fsl-rc-local/rc.local.etc
+===================================================================
+--- fsl-rc-local/rc.local.etc   (revision 1067)
++++ fsl-rc-local/rc.local.etc   (working copy)
+@@ -32,4 +32,7 @@
+ #For IR Application
+ mkdir -p /var/run/lirc
+ 
++# Enable Alljoyn router
++/etc/init.d/alljoyn start
++
+ exit 0

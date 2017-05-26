@@ -1,0 +1,93 @@
+diff -Nur webmin-1.620/webmin/index.cgi webmin-1.620-new/webmin/index.cgi
+--- webmin-1.620/webmin/index.cgi	2015-05-27 10:12:02.539486750 +0800
++++ webmin-1.620-new/webmin/index.cgi	2015-05-27 10:14:41.923491502 +0800
+@@ -13,38 +13,44 @@
+ &ReadParse();
+ 
+ my (@wlinks, @wtitles, @wicons);
+-@wlinks = ( "edit_access.cgi", "edit_bind.cgi", "edit_log.cgi",
+-	    "edit_proxy.cgi", "edit_ui.cgi", "edit_mods.cgi",
+-	    "edit_os.cgi", "edit_lang.cgi", "edit_startpage.cgi",
+-	    "edit_upgrade.cgi", "edit_session.cgi", "edit_assignment.cgi",
+-	    "edit_categories.cgi", "edit_descs.cgi", "edit_themes.cgi",
+-	    "edit_referers.cgi", "edit_anon.cgi", "edit_lock.cgi",
+-	    "edit_mobile.cgi", "edit_blocked.cgi", "edit_status.cgi",
+-            "edit_advanced.cgi", "edit_debug.cgi", "edit_web.cgi",
+-	    "edit_webmincron.cgi", );
+-@wtitles = ( $text{'access_title'}, $text{'bind_title'},
+-	     $text{'log_title'}, $text{'proxy_title'},
+-	     $text{'ui_title'}, $text{'mods_title'},
+-	     $text{'os_title'}, $text{'lang_title'},
+-	     $text{'startpage_title'}, $text{'upgrade_title'},
+-	     $text{'session_title'}, $text{'assignment_title'},
+-	     $text{'categories_title'}, $text{'descs_title'},
+-	     $text{'themes_title'}, $text{'referers_title'},
+-	     $text{'anon_title'}, $text{'lock_title'},
+-	     $text{'mobile_title'}, $text{'blocked_title'},
+-	     $text{'status_title'}, $text{'advanced_title'},
+-	     $text{'debug_title'}, $text{'web_title'},
+-	     $text{'webmincron_title'}, );
+-@wicons = ( "images/access.gif", "images/bind.gif", "images/log.gif",
+-	    "images/proxy.gif", "images/ui.gif", "images/mods.gif",
+-	    "images/os.gif", "images/lang.gif", "images/startpage.gif",
+-            "images/upgrade.gif", "images/session.gif",
+-	    "images/assignment.gif", "images/categories.gif",
+-	    "images/descs.gif", "images/themes.gif", "images/referers.gif",
+-	    "images/anon.gif", "images/lock.gif", "images/mobile.gif",
+-	    "images/blocked.gif", "images/status.gif",
+-	    "images/advanced.gif", "images/debug.gif", "images/web.gif",
+-	    "images/webmincron.gif", );
++@wlinks = ( "edit_lang.cgi", "edit_themes.cgi",
++          );
++@wtitles = ( $text{'lang_title'}, $text{'themes_title'},
++          );
++@wicons = ( "images/lang.gif", "images/themes.gif",
++          );
++#@wlinks = ( "edit_access.cgi", "edit_bind.cgi", "edit_log.cgi",
++#	    "edit_proxy.cgi", "edit_ui.cgi", "edit_mods.cgi",
++#	    "edit_os.cgi", "edit_lang.cgi", "edit_startpage.cgi",
++#	    "edit_upgrade.cgi", "edit_session.cgi", "edit_assignment.cgi",
++#	    "edit_categories.cgi", "edit_descs.cgi", "edit_themes.cgi",
++#	    "edit_referers.cgi", "edit_anon.cgi", "edit_lock.cgi",
++#	    "edit_mobile.cgi", "edit_blocked.cgi", "edit_status.cgi",
++#            "edit_advanced.cgi", "edit_debug.cgi", "edit_web.cgi",
++#	    "edit_webmincron.cgi", );
++#@wtitles = ( $text{'access_title'}, $text{'bind_title'},
++#	     $text{'log_title'}, $text{'proxy_title'},
++#	     $text{'ui_title'}, $text{'mods_title'},
++#	     $text{'os_title'}, $text{'lang_title'},
++#	     $text{'startpage_title'}, $text{'upgrade_title'},
++#	     $text{'session_title'}, $text{'assignment_title'},
++#	     $text{'categories_title'}, $text{'descs_title'},
++#	     $text{'themes_title'}, $text{'referers_title'},
++#	     $text{'anon_title'}, $text{'lock_title'},
++#	     $text{'mobile_title'}, $text{'blocked_title'},
++#	     $text{'status_title'}, $text{'advanced_title'},
++#	     $text{'debug_title'}, $text{'web_title'},
++#	     $text{'webmincron_title'}, );
++#@wicons = ( "images/access.gif", "images/bind.gif", "images/log.gif",
++#	    "images/proxy.gif", "images/ui.gif", "images/mods.gif",
++#	    "images/os.gif", "images/lang.gif", "images/startpage.gif",
++#            "images/upgrade.gif", "images/session.gif",
++#	    "images/assignment.gif", "images/categories.gif",
++#	    "images/descs.gif", "images/themes.gif", "images/referers.gif",
++#	    "images/anon.gif", "images/lock.gif", "images/mobile.gif",
++#	    "images/blocked.gif", "images/status.gif",
++#	    "images/advanced.gif", "images/debug.gif", "images/web.gif",
++#	    "images/webmincron.gif", );
+ if ($gconfig{'eazel'}) {
+ 	push(@wlinks, "edit_syslet.cgi");
+ 	push(@wtitles, $text{'syslet_title'});
+@@ -55,9 +61,9 @@
+ 	push(@wtitles, $text{'sendmail_title'});
+ 	push(@wicons, "images/sendmail.gif");
+ 	}
+-push(@wlinks, "edit_ssl.cgi", "edit_ca.cgi");
+-push(@wtitles, $text{'ssl_title'}, $text{'ca_title'});
+-push(@wicons, "images/ssl.gif", "images/ca.gif");
++#push(@wlinks, "edit_ssl.cgi", "edit_ca.cgi");
++#push(@wtitles, $text{'ssl_title'}, $text{'ca_title'});
++#push(@wicons, "images/ssl.gif", "images/ca.gif");
+ 
+ # Hide dis-allowed pages
+ my %allow = map { $_, 1 } split(/\s+/, $access{'allow'});

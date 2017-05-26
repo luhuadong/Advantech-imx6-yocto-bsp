@@ -1,0 +1,36 @@
+diff -Nur webmin-1.620/index.cgi webmin-1.620-new/index.cgi
+--- webmin-1.620/index.cgi	2013-02-03 14:46:53.000000000 +0800
++++ webmin-1.620-new/index.cgi	2015-05-27 09:42:18.723433573 +0800
+@@ -68,7 +68,7 @@
+ 	else {
+ 		@args = ( $gconfig{'nohostname'} ? $text{'main_title2'} :
+ 			    &text('main_title', $ver, $hostname, $ostr),
+-			  "images/webmin-blue.png" );
++			  "images/logo.png" );
+ 		if ($gconfig{'showlogin'}) {
+ 			$args[0] = $remote_user." : ".$args[0];
+ 			}
+diff -Nur webmin-1.620/blue-theme/right.cgi webmin-1.620-new/blue-theme/right.cgi
+--- webmin-1.620/blue-theme/right.cgi	2013-02-03 14:47:26.000000000 +0800
++++ webmin-1.620-new/blue-theme/right.cgi	2015-05-26 17:27:26.473689867 +0800
+@@ -26,7 +26,7 @@
+ 
+ # Webmin logo
+ if (&get_product_name() eq 'webmin') {
+-	print "<a href=http://www.webmin.com/ target=_new><img src=images/webmin-blue.png border=0></a><p>\n";
++	print "<a href=http://www.advantech.com/ target=_new><img src=images/logo.png border=0></a><p>\n";
+ 	}
+ 
+ if ($level == 0) {
+diff -Nur webmin-1.620/gray-theme/right.cgi webmin-1.620-new/gray-theme/right.cgi
+--- webmin-1.620/gray-theme/right.cgi	2013-02-03 14:47:29.000000000 +0800
++++ webmin-1.620-new/gray-theme/right.cgi	2015-05-26 17:26:33.361688284 +0800
+@@ -26,7 +26,7 @@
+ 
+ # Webmin logo
+ if (&get_product_name() eq 'webmin') {
+-	print "<a href=http://www.webmin.com/ target=_new><img src=images/webmin-blue.png border=0></a><p>\n";
++	print "<a href=http://www.advantech.com/ target=_new><img src=images/logo.png border=0></a><p>\n";
+ 	}
+ 
+ if ($level == 0) {

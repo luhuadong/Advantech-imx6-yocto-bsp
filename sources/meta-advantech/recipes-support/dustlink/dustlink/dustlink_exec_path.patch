@@ -1,0 +1,10 @@
+diff -Nur git/bin/dustLinkFullWeb/dustLinkFullWeb.py dustlink-modify/bin/dustLinkFullWeb/dustLinkFullWeb.py
+--- git/bin/dustLinkFullWeb/dustLinkFullWeb.py	2015-02-10 15:40:32.902818083 +0800
++++ dustlink-modify/bin/dustLinkFullWeb/dustLinkFullWeb.py	2015-02-10 17:25:17.318972508 +0800
+@@ -5,6 +5,7 @@
+ import sys
+ import os
+ if __name__ == "__main__":
++    os.chdir(os.path.join(os.sep,'usr','share','bin','dustLinkFullWeb'))
+     here = sys.path[0]
+     sys.path.insert(0, os.path.join(here, '..', '..'))

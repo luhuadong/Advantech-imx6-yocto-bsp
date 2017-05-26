@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Qt5 Patientcare
+Exec=/bin/sh -c "cd /usr/share/qtpatientcare-1.0/; ./patientcare"
+Icon=qtpatientcare
+Terminal=false
+Type=Application
+X-MB-SingleInstance=true
+Comment=Qt5 Patientcare
+StartupNotify=false

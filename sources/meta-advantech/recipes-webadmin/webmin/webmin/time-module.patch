@@ -1,0 +1,58 @@
+diff -Nur webmin-1.620/time/index.cgi webmin-1.620.new/time/index.cgi
+--- webmin-1.620/time/index.cgi	2013-02-03 14:47:06.000000000 +0800
++++ webmin-1.620.new/time/index.cgi	2015-07-17 14:31:57.977727184 +0800
+@@ -92,7 +92,7 @@
+ 		print &ui_form_start("apply.cgi");
+ 		print &tabletime(&hlink($text{'hw_title'}, "hardware_time"),
+ 				 0, %hw_date);
+-		print &ui_submit($text{'action_save'}, "action");
++		#print &ui_submit($text{'action_save'}, "action");
+ 		if (support_hwtime()) {
+ 			print &ui_submit($text{'action_sync_s'}, "action");
+ 			}
+@@ -159,7 +159,7 @@
+ 			&ui_checkbox("hardware", 1, $text{'index_hardware2'},
+ 				     $config{'timeserver_hardware'}));
+ 		}
+-
++=begin comment
+ 	# Show boot-time checkbox
+ 	$job = &find_webmin_cron_job();
+ 	print &ui_table_row($text{'index_boot'},
+@@ -177,7 +177,7 @@
+ 		   'weekdays' => '*' };
+ 	print &ui_table_row(undef,
+ 		&webmincron::show_times_input($job), 2);
+-
++=cut
+ 	print &ui_table_end();
+ 	print &ui_form_end([ [ "action", $text{'index_sync'} ] ]);
+ 	print &ui_tabs_end_tab();
+diff -Nur webmin-1.620/time/lang/en webmin-1.620.new/time/lang/en
+--- webmin-1.620/time/lang/en	2013-02-03 14:47:06.000000000 +0800
++++ webmin-1.620.new/time/lang/en	2015-07-17 08:49:24.081114454 +0800
+@@ -20,8 +20,8 @@
+ 
+ action_save=Save
+ action_apply=Apply
+-action_sync=Set system time to hardware time
+-action_sync_s=Set hardware time to system time
++action_sync=Set system time according to hardware time
++action_sync_s=Set hardware time according to system time
+ action_timeserver_sys=Sync system time
+ action_timeserver_hw=Sync hardware time
+ action_savezone=Change timezone
+diff -Nur webmin-1.620/time/lang/en.UTF-8 webmin-1.620.new/time/lang/en.UTF-8
+--- webmin-1.620/time/lang/en.UTF-8	2013-02-03 14:49:33.000000000 +0800
++++ webmin-1.620.new/time/lang/en.UTF-8	2015-07-17 08:49:51.713115277 +0800
+@@ -20,8 +20,8 @@
+ 
+ action_save=Save
+ action_apply=Apply
+-action_sync=Set system time to hardware time
+-action_sync_s=Set hardware time to system time
++action_sync=Set system time according to hardware time
++action_sync_s=Set hardware time according to system time
+ action_timeserver_sys=Sync system time
+ action_timeserver_hw=Sync hardware time
+ action_savezone=Change timezone

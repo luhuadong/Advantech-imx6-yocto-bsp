@@ -1,0 +1,44 @@
+diff --git a/build_core/conf/linux/arm/SConscript b/build_core/conf/linux/arm/SConscript
+index 04fb8b9..8384a29 100644
+--- a/build_core/conf/linux/arm/SConscript
++++ b/build_core/conf/linux/arm/SConscript
+@@ -18,8 +18,6 @@ import os
+ 
+ # Linux specific flags
+ env.Append(CPPDEFINES=['QCC_CPU_ARM'])
+-env.Append(CPPFLAGS=['-march=armv6',
+-                     '-mthumb-interwork'])
+ 
+ # Use the OpenEmbedded cross-compilation environment
+ vars = Variables()
+@@ -37,6 +35,30 @@ env['CC']   = env['CROSS_COMPILE'] + 'gcc'
+ env['CXX']  = env['CROSS_COMPILE'] + 'g++'
+ env['LINK'] = env['CROSS_COMPILE'] + 'gcc'
+ 
++# [Advantech] Modify CPPFLAGS and related path for Yocto
++vars = Variables()
++vars.Add(PathVariable('SYSROOT', 'Base system root directory', os.environ.get('SYSROOT'), PathVariable.PathIsDir))
++vars.Update(env)
++Help(vars.GenerateHelpText(env))
+ 
++if '' == env.subst('$SYSROOT'):
++   print 'SYSROOT variable is required for Linux/ARM builds'
++   if not GetOption('help'):
++      Exit(1)
+ 
++env.Append(CPPPATH = ['$SYSROOT/usr/include'])
++env.Append(LIBPATH = ['$SYSROOT/usr/lib'])
++env.Append(CPPFLAGS=['-march=armv7-a',
++                     '-mthumb-interwork',
++                     '-mfloat-abi=hard',
++                     '-mfpu=neon',
++                     '-mtune=cortex-a9',
++                     '--sysroot=$SYSROOT'])
++env.Append(CFLAGS=['-march=armv7-a',
++                   '-mthumb-interwork',
++                   '-mfloat-abi=hard',
++                   '-mfpu=neon',
++                   '-mtune=cortex-a9',
++                   '--sysroot=$SYSROOT'])
++env.Append(LINKFLAGS=['--sysroot=$SYSROOT'])
+ 

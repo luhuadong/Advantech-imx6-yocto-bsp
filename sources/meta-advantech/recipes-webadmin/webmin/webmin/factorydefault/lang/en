@@ -1,0 +1,9 @@
+index_title=Back to Advantech factory default
+index_save=Back to factory default
+index_factorydef=Back to Advantech factory default
+index_factorydefmsg=Click on this button to back to factory default. (username/password, network, timezone, WISE/WSN)
+factorydef_ecannot=You are not allowed to back to Advantech factory default
+factorydef_title=Back to Advantech factory default
+factorydef_rusure=Are you sure you want to back to Advantech factory default
+factorydef_ok=Back to Advantech factory default
+factorydef_exec=Back to Advantech factory default ..
